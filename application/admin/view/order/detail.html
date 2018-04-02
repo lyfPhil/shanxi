@@ -1,0 +1,118 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('The Order')} {:lang('Details')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('The Order')}</a></li>
+    <li class="active">{:lang('The Order')} {:lang('Details')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('The Order')} {:lang('Details')}</a></li>
+                  <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">{:lang('Receiving Information')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <ul class="list-unstyled">
+                            <li>
+                                <label>{:lang('The Order')} {:lang('Serial Number')}：</label>{$data.order_sn}</li>
+                            <li>
+                                <label>{:lang('The Order')} {:lang('Status:')}</label>
+                                {switch $data.state}
+                                    {case value="1"}{:lang('Pending Payment')}{/case}
+                                    {case value="2"}{:lang('Already Paid')}{/case}
+                                    {case value="3"}{:lang('Wait for Shipping')}{/case}
+                                    {case value="4"}{:lang('Transaction Complete')}{/case}
+                                    {case value="5"}{:lang('Transaction Canceled')}{/case}
+                                {/switch}
+                            </li>
+                            <li>
+                                <label>{:lang('Commodity Title')}：</label> <a href='#' id="pTitle" class="blue">{$data.title}</a></li>
+                            <li>
+                                <label>{:lang('Goods')} {:lang('Serial Number')}：{$data.goods_id}</label>
+                            </li>
+                            <li>
+                                <label>{:lang('The Game')} {:lang('District Service Name')}：{$data.server_name}</label></li>
+                            <li>
+                                <label>{:lang('Goods Type')}：</label>{$data.goods_type_name}</li>
+                            {eq name="data.goods_type" value="1"}
+                            <li>
+                                <label>{:lang('Role Level:')}</label><span>{$data.ext_attr[0]['text']}</span></li>
+                            <li>
+                                <label>{:lang('Character')} {:lang('Name')}：</label><span>{$data.ext_attr[1]['text']}</span></li>
+
+                            <li>
+                                <label>{:lang('Bind')} {:lang('Type')}：</label><span>{$data.ext_attr[2]['text']}</span></li>
+                            {/eq}
+                            <li>
+                                <label>{:lang('Transaction Type')}：</label>
+                                {switch $data.deliver_id}
+                                {case value='0'}{:lang('Consignment')}{/case}
+                                {case value='1'}{:lang('Guarantee')}{/case}
+                                {/switch}
+                            </li>
+                            <li>
+                                <label>{:lang('Product Price:')}</label>HK$ {$data.price}</li>
+                            <li>
+                                <label>{:lang('Number of Pieces:')}</label>{$data.num}</li>
+                            <li>
+                                <label>{:lang('The Total Price:')}</label>HK$ {$data.total}</li>
+                            <li>
+                                <label>{:lang('Service Fee: THB')}</label>{$data.charge}</li>
+                            <li>
+                                <label>{:lang('Seller')}：</label>{$data.sell_name}</li>
+                            <li>
+                                <label>{:lang('Buyers')}：</label>{$data.buy_name}</li>
+                            <li>
+                                <label>{:lang('Order Time')}</label>{notempty name="$data.create_time"}{$data.create_time|date="Y-m-d H:i:s",###}{/notempty}</li>
+                            <li>
+                                <label>{:lang('Payment Time')}</label>{notempty name="$data.pay_time"}{$data.pay_time|default=' '|date="Y-m-d H:i:s",###}{/notempty}</li>
+                            <li>
+                                <label>{:lang('Shipping Time:')}</label>{notempty name="$data.ship_time"}{$data.ship_time|default=' '|date="Y-m-d H:i:s",###}{/notempty}</li>
+                            <li>
+                                <label>{:lang('Transaction Time')}</label>{notempty name="$data.deal_time"}{$data.deal_time|default=' '|date="Y-m-d H:i:s",###}{/notempty}</li>
+                        </ul>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                        <ul class="list-unstyled" >
+                        <li>
+                            <label>{:lang('Phone:')}</label><span>{$address.mobile}</span></li>
+                        {if condition = "$data.goods_type neq '5'"}
+                        <li>
+                            {if condition="!empty($address.user_name)"} 
+                            <label>{:lang('User Name:')}</label>
+                            <span>{$address.user_name}</span>
+                            {/if}
+                        </li>
+                        <li>
+                            {if condition="!empty($address.server_name)"}
+                            <label>{:lang('Server Name:')}</label><span>{$address.server_name}</span></li>
+                            {/if}
+                        {/if}
+                        </ul>
+
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                    </div>
+                </div>
+              </div>
+            </form>
+    </div>
+</section>
+<!-- /.content -->
+{/block}

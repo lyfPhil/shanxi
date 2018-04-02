@@ -1,0 +1,206 @@
+{extend name="public/base" /}
+
+{block name="style"}
+<!-- Content Header (Page header) -->
+<style type="text/css">
+    th{
+        text-align: center;
+    }
+</style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>商品</a></li>
+        <li>商品种类</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('#')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i> 添加商品种类 </a>
+            <div class="pull-right">
+                <form method="get" class="form-inline">
+                    <div class="input-group">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="Search ...">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">搜索</button>
+                      </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                <table class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>#ID</th>
+                            <th>商品类型</th>
+                            <th>是否显示</th>
+                            <th>添加时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.type_name}</td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                            <small class="label bg-green"><i class="glyphicon glyphicon-ok"></i></small>
+                            {else/}
+                            <small class="label bg-red"><i class="glyphicon glyphicon-remove"></i></small>
+                            {/eq}
+                        </td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('#',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                            <a onClick="deleteOne({$vo.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function deleteOne(id){
+            swal({
+                title: "确定要删除这条记录吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/cover/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("操作已取消", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么返回的是布尔
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "未选择任何记录!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "确定要进行操作吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/cover/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "确定",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "确定",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("操作已取消", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

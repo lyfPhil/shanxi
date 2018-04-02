@@ -1,0 +1,151 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Add')}VIP{:lang('The User')}
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">VIP{:lang('The User')}列表</a></li>
+    <li class="active">{:lang('Add')}{:lang('The User')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">授予特权{:lang('The User')}：</label>
+                            <div class="col-sm-2">
+                                 <input type="text" name="username" value="" class="form-control">
+                                 <input type="hidden" name="user_id" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Privileges:')}</label>
+                            <div class='col-sm-2'>
+                                <select class="form-control" name="vip_id">
+                                    {volist name="vip" id="vo"}
+                                        <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">特权开始{:lang('Time:')}</label>
+                            <div class="col-sm-2">
+                                <input type="date" name="start_time" class="form_datetime form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('End of Privilege:')}</label>
+                            <div class="col-sm-2">
+                                <input type="date" name="end_time" class="form_datetime form-control">
+                            </div>
+                        </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                        <button class="btn btn-default btn-flat" type="reset">{:lang('Reset')}</button>
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返 回</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+
+<script>
+
+    $(function(){
+        $("input[name='username']").blur(function(){
+            var username = $(this).val().trim();
+            if (username != '') {
+                $.ajax({
+                    url:"{:url('admin/vip/userIsExist')}",
+                    data:{'username':username},
+                    type:'post',
+                    dataType:'json',
+                    success:function(e){
+                        if (e.code == 200) {
+                            $("input[name='user_id']").val(e.data.id);
+                        } else {
+                            swal({
+                                title: e.msg + username,
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                            });
+                            $("input[name='user_id']").val('');
+                            $("input[name='username']").val('');
+                        }
+                    }
+                })
+            }
+        });
+        $("#form").validate({
+            rules: {
+                username: {
+                    required: true,
+                },
+                start_time:{
+                    required: true,
+                },
+                end_time:{
+                    required: true
+                }
+            },
+            submitHandler: function(form) {
+                $.ajax({
+                    url:"{:url('admin/vip/saveuser')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            },function(isConfirm){
+                                window.history.go(-1);
+                            });
+                        } else {
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

@@ -1,0 +1,141 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Cover Recommended')} [{:lang('Search Keyword')}]
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Operations')}</a></li>
+    <li class="active">{:lang('Cover Recommended')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+              <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                  <form method="post" id="form1" action="" class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{:lang('The Title')}</label>
+                                    <div class="col-sm-5">
+                                        <input type="text" name="title" value="{$detail.title}"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{:lang('Add Entries')}</label>
+                                    <div class="col-sm-5">
+                                        <input type="text" name="words"  class="form-control" value="{$info[0]}" >
+                                        <input type="hidden" name="pos_id" value="20">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{:lang('The Period of Validity')}</label>
+                                    <div class="col-sm-2">
+                                        <input type="" name="start_time" value="{$detail.start_time}" class="form_datetime form-control">
+                                    </div>
+                                    <label class="col-sm-1 control-label">to</label>
+                                    <div class="col-sm-2">
+                                        <input type="" name="end_time" value="{$detail.end_time}" class="form_datetime form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{:lang('Status')}</label>
+                                    <div class="col-sm-2">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="status" {eq name="detail.status" value="1"}checked{/eq} value="1"> {:lang('Open')}
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="status" {eq name="detail.status" value="-1"}checked{/eq} value="-1"> {:lang('Close')}
+                                    </label>
+                                    </div>
+                                </div>
+                            <div class="box-footer">
+                                <div class="col-sm-offset-3 col-sm-10">
+                                    <div class="btn-group">
+                                        <input type="hidden" name="ad_type" value="0">
+                                        <input type="hidden" name="id" value="{$detail.id}">
+                                        <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                                    </div>
+                                </div>
+                            </div>
+                  </form>
+                  </div>
+                </div>
+           </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+
+    $(function(){
+
+        $("#form1").validate({
+            rules: {
+                count: {
+                    number: true,
+                },
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!");
+                $.ajax({
+                    url:"{:url('admin/cover/update')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期{:lang('Time')}{:lang('Choose')}器所能够提供的最精确的{:lang('Time')}{:lang('Choose')}视图
+ });
+</script>
+{/block}

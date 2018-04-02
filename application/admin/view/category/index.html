@@ -1,0 +1,131 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="#">景点文章</a></li>
+        <li><a href="#">栏目管理</a></li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('admin/category/create')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i> 创建栏目</a>
+            <a href="javascript::void(0)" onclick="reorder()" class="btn btn-default btn-flat"><i class="fa fa-sort-amount-desc"></i> 排序</a>
+        </div>
+       <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                <table class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center">#ID</th>
+                            <th style="text-align: center">名称</th>
+                            <!-- <th style="text-align: center">别名</th> -->
+                            <th style="text-align: center">类型<i class="fa fa-fw fa-question-circle" data-toggle="tooltip" data-placement="top" title="列表模式可以发布文章"></i></th>
+                            <th style="text-align: center">排序<i class="fa fa-fw fa-question-circle" data-toggle="tooltip" data-placement="top" title="数字越大越靠前"></i></th>
+                            <th style="text-align: center">显示状态</th>
+                            <th style="text-align: center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <form id="category" method="post">
+                        {volist name="data" id="vo"}
+                        <tr id = "t_{$vo.id}">
+                            <td>{$vo.id}</td>
+                            <td style="text-align: left">{neq name="vo.level" value="1"}<span style="color:#ccc;">{$vo.html}|----</span>{/neq}{$vo.title}</td>
+                            <!-- <td>{$vo.alias}</td> -->
+                            <td>{eq name="vo.type" value="0"}列表模式
+                            {else/}封面模式{/eq}</td>
+                            <td>
+                                <input name="ids[]" type="hidden" value="{$vo.id}">
+                                <input class="form-control input-sm" style="width:50px;height:25px;" name="reorder[]" type="text" value="{$vo.reorder}">
+                            </td>
+                            <td>{eq name="vo.status" value="1"}
+                                <a class="btn btn-success btn-sm" href="javascript:void(0);">显示</a>
+                                {else/}
+                                <a class="btn btn-darkorange btn-sm" href="javascript:void(0);">隐藏</a>
+                                {/eq}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{:Url('admin/category/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                                    <a onClick="deleteOne({$vo.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+
+{block name="js"}
+<script>
+    function reorder(){
+        $.ajax({
+            url:"{:Url('admin/category/reorder')}",
+            data:$("#category").serialize(),
+            type:'post',
+            dataType:'json',
+            success: function(xhr){
+                if(xhr.code == 200){
+                    swal(xhr.msg, "", "success");
+                }else{
+                    swal(xhr.msg, "", "error");
+                }
+            }
+        })
+    }
+
+    function deleteOne(id){
+            swal({
+                title: "{:lang('Are you sure you want to delete this message?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:Url('admin/category/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancel Operation')}", "", "error");
+                }
+            });
+    }
+</script>
+{/block}

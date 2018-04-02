@@ -1,0 +1,442 @@
+{extend name="travel/base" /}
+{block name="js"}
+<script type="text/javascript">
+	$(function(){
+		SyntaxHighlighter.all();
+		});
+		$(window).load(function(){
+		$('.flexslider').flexslider({
+		animation: "slide",
+		start: function(slider){
+		$('body').removeClass('loading');
+		}
+		});
+	});
+</script>
+{/block}
+{block name="banner"}
+	<!-- banner -->
+	<div class="banner bus-banner">
+		<!-- container -->
+		<div class="container">
+			<div class="col-md-4 banner-left">
+				<section class="slider2">
+					<div class="flexslider">
+						<ul class="slides">
+							<li>
+								<div class="slider-info">
+									<img src="images/5.jpg" alt="">
+								</div>
+							</li>
+							<li>
+								<div class="slider-info">
+									<img src="images/6.jpg" alt="">
+								</div>
+							</li>
+							<li>	
+								<div class="slider-info">
+									<img src="images/7.jpg" alt="">
+								</div>
+							</li>
+							<li>	
+								<div class="slider-info">
+									<img src="images/8.jpg" alt="">
+								</div>
+							</li>
+							<li>	
+								<div class="slider-info">
+									<img src="images/6.jpg" alt="">
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<!--FlexSlider-->
+			</div>
+			<div class="col-md-8 banner-right">
+				<div class="sap_tabs">	
+					<div class="booking-info about-booking-info">
+						<h2>Book Bus Tickets Online</h2>
+					</div>
+					<div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">	
+						  <!---->		  	 
+									<div class="facts about-facts">
+										<div class="booking-form">
+										<link rel="stylesheet" href="css/jquery-ui.css" />
+											<!---strat-date-piker---->
+											<script>
+												$(function() {
+													$( "#datepicker,#datepicker1" ).datepicker();
+												});
+											</script>
+											<!---/End-date-piker---->
+											<!-- Set here the key for your domain in order to hide the watermark on the web server -->
+											
+											<div class="online_reservation">
+												<div class="b_room">
+															<div class="booking_room">
+																<div class="reservation">
+																	<ul>		
+																		<li class="span1_of_1 desti">
+																			 <h5>From</h5>
+																			 <div class="book_date">
+																				 <form>
+																					<span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+																					<input type="text" placeholder="Type Departure City" class="typeahead1 input-md form-control tt-input" required="">
+																				 </form>
+																			 </div>					
+																		 </li>
+																		 <li class="span1_of_1 left desti">
+																			 <h5>To</h5>
+																			 <div class="book_date">
+																			 <form>
+																				<span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+																				<input type="text" placeholder="Type Destination City" class="typeahead1 input-md form-control tt-input" required="">
+																			 </form>
+																			 </div>		
+																		 </li>
+																		 <div class="clearfix"></div>
+																	</ul>
+																</div>
+																<div class="reservation">
+																	<ul>	
+																		 <li  class="span1_of_1">
+																			 <h5>Departing</h5>
+																			 <div class="book_date">
+																			 <form>
+																				<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+																				<input type="date" value="Select date" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Select date';}">
+																			</form>
+																			 </div>		
+																		 </li>
+																		 <li class="span1_of_1 left">
+																			 <h5>Adults (18+)</h5>
+																			 <!----------start section_room----------->
+																			 <div class="section_room">
+																				  <select id="country" onchange="change_country(this.value)" class="frm-field required">
+																						<option value="null">1</option>
+																						<option value="null">2</option>         
+																						<option value="AX">3</option>
+																						<option value="AX">4</option>
+																						<option value="AX">5</option>
+																						<option value="AX">6</option>
+																				  </select>
+																			 </div>	
+																		</li>
+																		<li class="span1_of_1 left">
+																			 <h5>Children (0-17)</h5>
+																			 <!----------start section_room----------->
+																			 <div class="section_room">
+																				  <select id="country" onchange="change_country(this.value)" class="frm-field required">
+																						<option value="null">1</option>
+																						<option value="null">2</option>         
+																						<option value="AX">3</option>
+																						<option value="AX">4</option>
+																						<option value="AX">5</option>
+																						<option value="AX">6</option>
+																				  </select>
+																			 </div>	
+																		</li>
+																		 <div class="clearfix"></div>
+																	</ul>
+																</div>
+																<div class="reservation">
+																	<ul>	
+																		 <li class="span1_of_3">
+																				<div class="date_btn">
+																					<form>
+																						<input type="submit" value="Search">
+																					</form>
+																				</div>
+																		 </li>
+																		 <div class="clearfix"></div>
+																	</ul>
+																</div>
+															</div>
+															<div class="clearfix"></div>
+												</div>
+											</div>
+											<!---->
+										</div>	
+									</div>
+					</div>	
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //banner -->
+	<div class="move-text">
+		<div class="marquee">Register your hotel with us free of cost.<a href="signup.html">Here</a></div>
+		<script type="text/javascript" src="js/jquery.marquee.min.js"></script>
+        <script>
+		  $('.marquee').marquee({ pauseOnHover: true });
+		  //@ sourceURL=pen.js
+		</script>
+	</div>
+{/block}
+{block name="content"}
+	<!-- banner-bottom -->
+	<div class="banner-bottom">
+		<!-- container -->
+		<div class="container">
+			<div class="banner-bottom-info">
+				<h3>Today's Top Deals</h3>
+			</div>
+			<div class="banner-bottom-grids">
+				<div class="col-md-4 banner-bottom-grid">
+					<div class="banner-bottom-middle">
+						<a href="products.html">
+							<img src="images/b3.jpg" alt="">
+							<div class="destinations-grid-info tours">
+								<h5>Book your next Malaysia holiday!</h5>
+								<p>Integer eget aliquam nibh. Donec blandit volutpat libero id lacinia</p>
+								<p class="b-period">Book Period: Now - 7 September 2015 | Travel Period: Now - 31 October 2015 </p>
+							</div>
+						</a>
+					</div>
+					<div class="choose">
+						<div class="choose-info">
+							<h4>Why Choose Us</h4>
+						</div>
+						<div class="choose-grids">
+							<div class="choose-grids-info">
+								<div class="choose-left">
+									<h5>09</h5>
+									<span>Million</span>
+								</div>
+								<div class="choose-right">
+									<a href="single.html">Aliquam faucibus vehicula vulputate</a>
+									<p>Maecenas euismod tortor a tristique convallis diam eros aliquam.</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="choose-grids-info">
+								<div class="choose-left">
+									<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+								</div>
+								<div class="choose-right">
+									<a href="single.html">Sed tincidunt consectetur augue</a>
+									<p>Nulla bibendum libero in nunc eleifend tincidunt. Aliquam quis molestie lectus</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="choose-grids-info">
+								<div class="choose-left">
+									<h6>$</h6>
+								</div>
+								<div class="choose-right">
+									<a href="single.html">Nullam et arcu interdum, accumsan justo</a>
+									<p>Maecenas dapibus eu purus vel imperdiet. Maecenas cursus, arcu sed tempus </p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 banner-bottom-grid">
+					<div class="banner-bottom-middle">
+						<a href="products.html">
+							<img src="images/b2.jpg" alt="">
+							<div class="destinations-grid-info tours">
+								<h5>Book your next Malaysia holiday!</h5>
+								<p>Integer eget aliquam nibh. Donec blandit volutpat libero id lacinia</p>
+								<p class="b-period">Book Period: Now - 7 September 2015 | Travel Period: Now - 31 October 2015 </p>
+							</div>
+						</a>
+					</div>
+					<div class="top-destinations-grids">
+						<div class="top-destinations-info">
+							<h4>Top Destinations</h4>
+						</div>
+						<div class="top-destinations-bottom">
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t1.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$190</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t2.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$213</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t3.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$176</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t4.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$490</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 banner-bottom-grid">
+					<div class="top-destinations-info">
+						<h4>Customer Services</h4>
+					</div>
+					<div class="customer-grid">
+						<div class="customer-left-grid">
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="#">Print E-Ticket</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="#">Road Status</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="#">Manage Bookings</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="#">Refund Status</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+						</div>
+						<div class="customer-left-grid">
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="#">Cancellation</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="faqs.html">FAQs</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-phone-alt" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="#">Complaints</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="c-left-grids">
+								<div class="c-left">
+									<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+								</div>
+								<div class="c-right">
+									<a href="contact.html">Contact</a>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+					<div class="news-grids">
+						<div class="news-grids-info">
+							<h4>Our Advantages</h4>
+						</div>
+						<div class="news-grids-bottom">
+							<!-- date -->
+							<div id="design" class="date">
+								<div id="cycler">   	
+								<div class="date-text" style="overflow: hidden; display: block; height: 2.79634272674464px; margin-top: 0px; margin-bottom: 0.575717620212133px; padding-top: 0px; padding-bottom: 0px;">
+										<a href="single.html">July 08,2015</a>
+										<p>Nullam non turpis sit amet metus tristique egestas et et orci.</p>
+									</div><div class="date-text" style="overflow: hidden; display: block;">
+										<a href="single.html">February 15,2015</a>
+										<p>Duis venenatis ac ipsum vel ultricies in placerat quam</p>
+									</div><div class="date-text" style="overflow: hidden; display: block;">
+										<a href="single.html">January 15,2015</a>
+										<p>Pellentesque ullamcorper fringilla ipsum, ornare dapibus velit volutpat sit amet.</p>
+									</div><div class="date-text" style="overflow: hidden; display: block;">
+										<a href="single.html">September 24,2014</a>
+										<p>In lobortis ipsum mi, ac imperdiet elit pellentesque at.</p>
+									</div><div class="date-text" style="overflow: hidden; display: block;">
+										<a href="single.html">August 15,2015</a>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+									</div></div>
+								<script>
+									function cycle($item, $cycler){
+										setTimeout(cycle, 2000, $item.next(), $cycler);
+										
+										$item.slideUp(1000,function(){
+											$item.appendTo($cycler).show();        
+										});
+						
+										}
+									cycle($('#cycler div:first'),  $('#cycler'));
+								</script>
+							</div>
+							<!-- //date -->
+						</div>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //banner-bottom -->
+{/block}	

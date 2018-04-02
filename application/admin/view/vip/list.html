@@ -1,0 +1,151 @@
+{extend name="public/base" /}
+{block name="style"}
+    <style>
+        a {cursor: pointer;}
+    </style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    VIP
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">vip</a></li>
+    <li class="active">VIP列表</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <!--<a href="{:Url('#')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i> {:lang('Add')}VIP{:lang('Type')} </a>-->
+            <div class="pull-right">
+                <!--<form method="get" class="form-inline">
+                    <div class="input-group">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="Search ...">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div>
+                </form>-->
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{:lang('Serial Number')}</th>
+                            <th>特权{:lang('Name')}</th>
+                            <th>{:lang('Instructions')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.remark}</td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                                生效中
+                            {else/}
+                                已{:lang('Bisable')}
+                            {/eq}
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <!--<a href="{:url('/vip/editvip',['id'=>$vo.id])}">{:lang('Editor')}</a>-->
+                            {eq name="vo.status" value="1"}
+                                <a onClick="deleteOne({$vo.id},0)">{:lang('Bisable')}</a>
+                            {else/}
+                                <a onClick="deleteOne({$vo.id},1)">{:lang('Enabled')}</a>
+                            {/eq}
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <div class="pull-right">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function deleteOne(id,status){
+        if(status == 1){
+            var title = "{:lang('Determine')}{:lang('Open')}该特权？";
+            var text = "{:lang('Open')}后，该特效会生效";
+            var msg = "该特权已经生效";
+        } else {
+            var title = "{:lang('Determine')}要{:lang('Bisable')}该特权?";
+            var text = "{:lang('Bisable')}后，该特权会失效";
+            var msg = "该特权已经{:lang('Bisable')}";
+        }
+            swal({
+                title: title,
+                text: text,
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                cancelButtonText: "{:lang('Cancel')}",
+                confirmButtonText: "{:lang('Determine')}",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/vip/switch_on_off')}",
+                        data:{'id':id,'status':status},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal({
+                                    title: msg,
+                                    text:'',
+                                    type:'success',
+                                    confirmButtonText:"{:lang('Determine')}",
+                                    closeOnCancel: false
+                                },function(isConfirm){
+                                    window.location.reload();
+                                });
+                            } else {
+                                swal(msg,'', "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancelled')}{:lang('Operation')}");
+                }
+            });
+    }
+
+
+</script>
+{/block}

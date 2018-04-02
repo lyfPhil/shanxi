@@ -1,0 +1,229 @@
+{extend name="public/base" /}
+{block name='style'}
+<style type="text/css">
+    th{
+        text-align: center;
+    }
+</style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>用户</a></li>
+        <li><a>后台用户</a></li>
+        <li>行为日志</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-body">
+            <div class="box-header with-border">
+                <div class="">
+                    <form method="get" class="form-inline">
+                        <span class="input-group">IP地址 :</span>
+                        <div class="input-group">
+                            <input type="text" name="ip" value="{$search.ip|default=""}" class="form-control" placeholder="IP地址">
+                        </div>
+                        <span class="input-group">执行时间 :</span>
+                        <div class="input-group" style="width:20%" >
+                            <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="开始时间">
+                        </div>-
+                        <div class="input-group" style="width:20%">
+                            <input type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="结束时间">
+                        </div>
+                        <div class="input-group">
+                          <input type="text" name="username" value="{$search.username|default=""}" class="form-control" placeholder="执行人">
+                          <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default btn-flat">搜索</button>
+                          </span>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-flat" href="{:Url('admin/lrecord/index')}">重置搜索</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                <table class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>流水号</th>
+                            <th>执行人</th>
+                            <th>IP地址</th>
+                            <th>行为日志</th>
+                            <th>执行时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.username}</td>
+                        <td>{$vo.ip}</td>
+                        <td>{$vo.remark}</td>
+                        <td>{$vo.create_time|date = "Y-m-d H:i:s",###}</td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/lrecord/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期
+ });
+</script>
+<script>
+    function deleteOne(id){
+            swal({
+                title: "确定要删除这条记录吗啊？",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/lrecord/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("操作已取消", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么返回的是布尔
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "没有选择任何记录!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "强调要执行操作吗？",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/record/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "确定",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "确定",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("操作已取消", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

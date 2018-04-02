@@ -1,0 +1,120 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+    th{
+        text-align: center;
+    }
+</style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>用户</a></li>
+        <li><a>后台用户</a></li>
+        <li>用户组列表</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('admin/group/create')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i>创建用户组</a>
+            <div class="pull-right">
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                <table class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>名称</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="data" id="vo"}
+                        <tr id = "t_{$vo.id}">
+                            <td>{$vo.id}</td>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.remark}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{:Url('admin/group/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="pull-right">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function deleteOne(group_id){
+            swal({
+                title: "确定要删除这条记录吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:Url('admin/group/remove')}",
+                        data:{'id':group_id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+group_id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("操作已取消", "", "error");
+                }
+            });
+    }
+</script>
+{/block}

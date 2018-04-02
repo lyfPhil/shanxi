@@ -1,0 +1,251 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Help List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Content')}</a></li>
+    <li class="active">{:lang('Help List')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('admin/helpcenter/create')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i>{:lang('Create Article')}</a>    
+            <div class="btn-group">
+                <a class="btn btn-default btn-flat" href="{:Url('admin/helpcenter/index')}">{:lang('Reset The Search')}</a>
+            </div>
+            <div class="pull-left">
+                <div class="col-sm-6">
+                    <form method="post" class="form-inline">
+                        <div class="input-group">
+                            <div><select id="type" class="form-control">
+                                <option value="change">{:lang('Audit')}</option>
+                                <option value="delete">{:lang('Delete')}</option>
+                            </select>
+                            </div>
+                            <span class="input-group-btn"> 
+                                <button type="button" onclick="apply()" class="btn btn-primary btn-flat"><i class="fa fa-save"></i>{:lang('Application')}</button> 
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="pull-right">
+                <form method="get" class="form-inline">
+                    <span class="input-group">{:lang('Create Time')} :</span>
+                    <div class="input-group">
+                        <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The Start Time')}">
+                    </div>-
+                    <div class="input-group">
+                        <input type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The End Time')}">
+                    </div>
+                    <div class="input-group">
+                        <select class="form-control" name="category_id">
+                            <option value="">{:lang('Choose')} {:lang('Column')}</option>
+                            {volist name="cate" id="vo"}
+                            <option {notempty name="search.category_id"}{eq name="search.category_id" value="$vo.id"}selected{/eq}{/notempty} value="{$vo.id}">{$vo.html}{$vo.title}{$vo.html}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" name="title" value="{$search.title|default=""}" class="form-control" placeholder="{:lang('The Article Title')} ...">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>#ID</th>
+                            <th>{:lang('The Title')}</th>
+                            <th>{:lang('Column')}</th>
+                            <th>{:lang('Publisher')}</th>
+                            <th>{:lang('Audit')}</th>
+                            <th>{:lang('Create Time')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td><a target="_blank" href="{:url('index/article/read', ['id' => $vo['id']])}">{$vo.title}</a></td>
+                        <td>{$vo.category_name}</td>
+                        <td>{$users[$vo.uid]}</td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                            <small class="label bg-light-blue"><i class="fa fa-check"></i></small>
+                            {else/}
+                            <small class="label bg-gray"><i class="fa fa-times"></i></small>
+                            {/eq}
+                        </td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/helpcenter/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                            <a onClick="deleteOne({$vo.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="box-footer">
+                <div class="col-sm-6">
+                    <div class="pull-left">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期{:lang('Time')}{:lang('Choose')}器所能够提供的最精确的{:lang('Time')}{:lang('Choose')}视图
+ }); 
+</script>
+
+<script>
+    function deleteOne(id){
+            swal({
+                title: "{:lang('Are you sure you want to delete this message?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/helpcenter/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancel Operation')}", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[]; 
+        $('input[name="ids[]"]:checked').each(function(){ 
+            chk_value.push($(this).val()); 
+        }); 
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "{:lang('Has not choose any record')}!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "{:lang('Are you sure you want to operate?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/helpcenter/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("{:lang('Cancel Operation')}", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

@@ -1,0 +1,159 @@
+{extend name="public/base" /}
+{block name="style"}
+    <style>
+        td {
+            width: 5%;
+            vertical-align: initial !important;
+        }
+    </style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('The Bank Information')}[{:lang('List')}]
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Bank')}</a></li>
+    <li class="active">{:lang('The Bank Information')}[{:lang('List')}]</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('admin/bankinfo/create')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i> {:lang('Add')} {:lang('The Bank Information')}</a>
+
+            <div class="pull-right">
+                <form method="get" class="form-inline">
+                    <div class="input-group">
+                        <select class="form-control" name="status">
+                            <option value="">{:lang('All')}</option>
+                            <option {notempty name="search.status"}{eq name="search.status" value="1"}selected{/eq}{/notempty} value="1">{:lang('Open')}</option>
+                            <option {notempty name="search.status"}{eq name="search.status" value="0"}selected{/eq}{/notempty} value="0">{:lang('Close')}</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="{:lang('Please Input')} {:lang('Bank Name')}">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-default btn-flat" href="{:Url('admin/bankinfo/index')}">{:lang('Reset The Search')}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{:lang('Bank Name')}</th>
+                            <th>{:lang('The Bank Code')}</th>
+                            <th>{:lang('Mobile Phone Icon')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>{$vo.bank_name}</td>
+                        <td>{$vo.code}</td>
+                        <td><img src='{$vo.bank_icon}'  style="width:320px"></td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                                <small class="label bg-light-blue"><i class="fa fa-check"></i></small>
+                            {else }
+                                <small class="label bg-gray"><i class="fa fa-times"></i></small>
+                            {/eq}
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/bankinfo/edit',['id'=>$vo.id])}">{:lang('Edit')}</a>
+                            {switch name='$vo.status'}
+                                {case value='0'}
+                                    <a onClick="turnOnOff({$vo.id},0)">{:lang('Start')}</a>
+                                {/case}
+                                {case value='1'}
+                                    <a onClick="turnOnOff({$vo.id},1)">{:lang('Close')}</a>
+                                {/case}
+                            {/switch}
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-md-offset-6 col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function turnOnOff(id, status){
+        if (status == 0) {
+            var title = "{:lang('be sure to open')}?";
+        } else {
+            var title = "{:lang('be sure to close')}?";
+        }
+        swal({
+            title: title,
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "{:lang('confirm')}",
+            cancelButtonText: "{:lang('cancel')}",
+            closeOnConfirm: false,
+            closeOnCancel: false },
+        function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url:"{:url('admin/bankinfo/turn_on_off')}",
+                    data:{'id':id},
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                type: "success",
+                            },function(isConfirm){
+                                window.location.reload();
+                            });
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                })
+            } else {
+                swal("{:lang('Cancel Operation')}", "", "error");
+            }
+        });
+    }
+
+</script>
+{/block}

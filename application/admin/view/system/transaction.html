@@ -1,0 +1,137 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Transaction Fee Setting')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('System')}</a></li>
+    <li class="active">{:lang('Transaction Fee Setting')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Parameter Settings')}</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Transaction Fee Rate')}</label>
+                                    <div class="col-sm-1">
+                                         <input type="text" name="precent" value="{$trans.precent}" class="form-control">
+                                    </div>
+                                    <label class=" control-label">({:lang('(For Example: 0.1 means 10%)')})</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Minimum Fee')}</label>
+                                    <div class="col-sm-1">
+                                         <input type="text" name="base" value="{$trans.base}" class="form-control">
+                                    </div>
+                                </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                key: {
+                    required: true,
+                    maxlength: 150
+                },
+                name: {
+                    required: true,
+                    maxlength: 150
+                }
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!");
+                $.ajax({
+                    url:"{:url('admin/system/editTransaction')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}
+<!--<div class="form-group">
+        <label class="col-sm-2 control-label" for="lower">{:lang('The Lowest Limit')}</label>
+        <label class="col-sm-1 control-label" style="width: 2%;padding-right: 0px;padding-left: 0px;">{:lang('Below')}</label>
+        <div class="col-sm-1">
+             <input type="text" name="lower" value="{$trans.lower}" class="form-control">
+        </div>
+        <label class="col-sm-2 control-label" style="width: 9%;padding-right: 0px;padding-left: 0px;">(单位：港币)至少收取</label>
+        <div class="col-sm-1">
+             <input type="text" name="lower_free" value="{$trans.lower_free}" class="form-control">
+        </div>
+        <label class="col-sm-2 control-label" style="width: 9%;padding-right: 0px;padding-left: 0px;">{:lang('Fees')}(单位：港币)</label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="lower">{:lang('The Highest Limit')}</label>
+        <label class="col-sm-1 control-label" style="width: 2%;padding-right: 0px;padding-left: 0px;">{:lang('Above')}</label>
+        <div class="col-sm-1">
+             <input type="text" name="higher" value="{$trans.higher}" class="form-control">
+        </div>
+        <label class="col-sm-2 control-label" style="width: 9%;padding-right: 0px;padding-left: 0px;">(单位：港币)至多收取</label>
+        <div class="col-sm-1">
+             <input type="text" name="higher_free" value="{$trans.higher_free}" class="form-control">
+        </div>
+        <label class="col-sm-2 control-label" style="width: 9%;padding-right: 0px;padding-left: 0px;">{:lang('Fees')}(单位：港币)</label>
+    </div>-->

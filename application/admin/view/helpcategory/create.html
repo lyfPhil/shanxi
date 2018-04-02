@@ -1,0 +1,148 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Create Columns')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Content')}</a></li>
+    <li class="active">{:lang('Create Columns')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+        <div class="box box-solid">
+            <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Basic Information')}</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Classification')}</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" name="parent_id">
+                                    <option value="0">{:lang('Classification')}</option>
+                                    {volist name="data.category" id="vo"}
+                                    <option value="{$vo.id}">{$vo.html}{$vo.title}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Name')}</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="title" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('The Alias')}</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="alias" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Model')}</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" name="type">
+                                    <option value="0">{:lang('Cover Model')}</option>
+                                    <option value="1">{:lang('List Model')}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Status')}</label>
+                            <div class="col-sm-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1"> {:lang('Display')}
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="0"> {:lang('Hide')}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('The Sorting')}</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="reorder" class="form-control">
+                            </div>
+                        </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="btn-group">
+                            <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                            <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                        </div>
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                    </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+        </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 32
+                },
+                alias: {
+                    required: true,
+                    maxlength: 32
+                }
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!"); -->
+                $.ajax({
+                    url:"{:Url('admin/helpcategory/store')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

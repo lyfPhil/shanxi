@@ -1,0 +1,129 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('The Column List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Content')}</a></li>
+    <li class="active">{:lang('The Column List')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('admin/helpcategory/create')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i> {:lang('Create Columns')}</a>
+            <a href="javascript::void(0)" onclick="reorder()" class="btn btn-default btn-flat"><i class="fa fa-sort-amount-desc"></i> {:lang('The Sorting')}</a>
+        </div>
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>{:lang('Name')}</th>
+                            <th>{:lang('The Alias')}</th>
+                            <th>{:lang('Model')}<i class="fa fa-fw fa-question-circle" data-toggle="tooltip" data-placement="top" title="{:lang('List Model can Release Content')}"></i></th>
+                            <th>{:lang('The Sorting')}<i class="fa fa-fw fa-question-circle" data-toggle="tooltip" data-placement="top" title="{:lang('The greater the Digital, the more forward')}"></i></th>
+                            <th>{:lang('Display')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <form id="category" method="post">
+                        {volist name="data" id="vo"}
+                        <tr id = "t_{$vo.id}">
+                            <td>{$vo.id}</td>
+                            <td>{neq name="vo.level" value="1"}<span style="color:#ccc;">{$vo.html}|----</span>{/neq}{$vo.title}</td>
+                            <td>{$vo.alias}</td>
+                            <td>{eq name="vo.type" value="0"}{:lang('List Model')}{else/}{:lang('Cover Model')}{/eq}</td>
+                            <td>
+                                <input name="ids[]" type="hidden" value="{$vo.id}">
+                                <input class="form-control input-sm" style="width:50px;height:25px;" name="reorder[]" type="text" value="{$vo.reorder}">
+                            </td>
+                            <td>{eq name="vo.status" value="1"}
+                                <small class="label bg-light-blue"><i class="fa fa-check"></i></small>
+                                {else/}
+                                <small class="label bg-gray"><i class="fa fa-times"></i></small>
+                                {/eq}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{:Url('admin/helpcategory/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                                    <a onClick="deleteOne({$vo.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+
+{block name="js"}
+<script>
+    function reorder(){
+        $.ajax({
+            url:"{:Url('admin/helpcategory/reorder')}",
+            data:$("#category").serialize(),
+            type:'post',
+            dataType:'json',
+            success: function(xhr){
+                if(xhr.code == 200){
+                    swal(xhr.msg, "", "success");
+                }else{
+                    swal(xhr.msg, "", "error");
+                }
+            }
+        })
+    }
+
+    function deleteOne(id){
+            swal({
+                title: "{:lang('Are you sure you want to delete this message?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:Url('admin/helpcategory/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancel Operation')}", "", "error");
+                }
+            });
+    }
+</script>
+{/block}

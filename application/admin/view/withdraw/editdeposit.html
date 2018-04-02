@@ -1,0 +1,163 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Refund')} {:lang('Deposit')} {:lang('Details')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Financial')}</a></li>
+    <li class="active">{:lang('Refund')} {:lang('Deposit')} {:lang('Details')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Refund')} {:lang('Deposit')} {:lang('Details')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                         <ul class="list-unstyled">
+                            <li>
+                                <label>{:lang('Apply for The Serial Number.')}：{$detail.draw_no}</label></li>
+                            <li>
+                                <label>{:lang('The User Account')}：</label>{$detail.user_name}</li>
+                            <li>
+                                <label>{:lang('Type of Apply')}：</label>
+                                {if condition ="$detail.type eq '0'"}
+                                {:lang('Withdrawal')}
+                                {else condition = "$detail.type eq '1'"}
+                                {:lang('Refund')} {:lang('Deposit')}
+                                {/if}
+                            </li>
+                            <li>
+                                <label>{:lang('Current Account Balance:')}</label><span>HK$ {$detail.before_balance}</span></li>
+                            <li>
+                                <label>{:lang('Refund')} {:lang('Deposit')} {:lang('The Amount of Money')}：</label><span>HK$ {$detail.cash}</span></li>
+                            <li>
+                                <label>{:lang('Fees:')}</label><span>HK$ {$detail.service_free}</span></li>
+                            <li>
+                                <label>{:lang('Actual Refund Amount')}：</label><span>HK$ {$detail.actual_cash}</span></li>
+                            <li>
+                                <label>{:lang('Time of Apply')}:</label><span>{$detail.create_time|date = "Y-m-d H:i:s",###}</span></li>
+                            <li>
+                                <label>{:lang('Expiration Date:')}</label><span>{$detail.over_time|date = "Y-m-d H:i:s",###}</span></li>
+                            <li>
+                                <label>{:lang('Withdrawal')}{:lang('Status:')}</label>
+                                {switch name="detail.state"}
+                                    {case value="0"}{:lang('Untreated')}{/case}
+                                    {case value="1"}{:lang('Success')}{/case}
+                                    {case value="2"}{:lang('Cancelled')}{/case}
+                                {/switch}
+                            </li>
+                            {if condition = "$detail.state eq '2'"}
+                            <li>
+                                <label>{:lang('Reasons for Cancellation:')}</label><span>{$detail.cancel}</span></li>
+                            {/if}
+                            {if condition = "$detail.state eq '0'"}
+                            <li>
+                                <label><font color="red">{:lang('Operation')}：</font></label>
+                                <span>
+                                    <input type="radio" name="state" {eq name="detail.state" value="3"}checked{/eq} value="1">{:lang('Confirm')} {:lang('Refund')}
+                                </span>
+                                <span>
+                                    <input type="radio" name="state" {eq name="detail.state" value="2"}checked{/eq} value="2">{:lang('The Reason for Turn Down')}
+                                </span>
+                            </li>
+                            {/if}
+                            <li id="delay" style="display: none">
+                                <label>{:lang('The Reason for Turn Down')}：</label>
+                                <span><input type="text" name="cancel" style="width: 200px"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <input type="hidden" name="draw_no" value="{$detail.draw_no}">
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                        {if condition = "$detail.state eq '0' "}
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                        {/if}
+                    </div>
+                </div>
+              </div>
+            </form>
+    </div>
+
+</section>
+{/block}
+<!-- /.content -->
+{block name="js"}
+<script>
+    $(function(){
+        $(":radio").click(function(){
+            //alert($(this).val());
+            var check = $(this).val();
+            if(check == '1'){
+                $("#delay").css({"display":"none"});
+            }
+            if(check == '2'){
+                $("#delay").css({"display":""});
+            }
+        });
+    })
+</script>
+<script>
+
+    $(function(){
+        //按钮{:lang('Bisable')}
+        var state = '{$detail.state}';
+        if( state == '2' || state == '1'){
+            $("#submit").attr({"disabled":"disabled"});
+        }
+
+        $("#form").validate({
+            rules: {
+                cancel:{
+                    required:true
+                }
+            },
+            submitHandler: function(form) {
+            <!-- alert("submitted!"); -->
+            swal({
+            title: "{:lang('Determine')}提交",
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "{:lang('Determine')}",
+            cancelButtonText: "{:lang('Cancel')}",
+            closeOnConfirm: false,
+            closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                    url:"{:Url('admin/withdraw/updateDeposit')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+                        if(xhr.code == 200){
+                            swal(xhr.msg, "", "success");
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                    })
+                } else {
+                    swal("{:lang('Cancel')}{:lang('Operation')}", "", "error");
+                }
+            });
+            }
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,264 @@
+{extend name="public/base" /}
+{block name="style"}
+    <style>
+        label {width: 117px; margin-bottom: 17px;}
+    </style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Withdrawal Details')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Financial')}</a></li>
+    <li class="active">{:lang('Withdrawal Details')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal" style="float:left;width:50%">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Withdrawal Details')}</a></li>
+                </ul>
+                <div class="tab-content" >
+                    <div class="tab-pane active" id="tab_1">
+                         <ul class="list-unstyled">
+                            <li>
+                                <label style="width: 30%">{:lang('Withdrawal')} {:lang('Serial Number')}：</label>{$detail.draw_no}
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('The User Account')}：</label>{$detail.user_name}
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('Cardholder Name')}：</label>{$detail.open_name}
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('Bank Name')}：</label>{$detail.bank_name}
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('Bank Card Number')}：</label>{$detail.bank_card}
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('Withdrawal')} {:lang('The Amount of Money')}：</label><span>{$detail.cash}</span>
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('Fees:')}</label><span>{$detail.service_free}</span>
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('The Actual Amount Credited')}：</label><span>{$detail.actual_cash}</span>
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('Time of Apply')}:</label><span>{$detail.create_time|date = "Y-m-d H:i:s",###}</span>
+                            </li>
+                            <!--<li>
+                                <label style="width: 30%">{:lang('Expiration Date:')}</label><span>{$detail.over_time|date = "Y-m-d H:i:s",###}</span>
+                            </li>-->
+                            <li>
+                                <label style="width: 30%">{:lang('Withdrawal')} {:lang('Status:')}</label>
+                                {switch name="detail.state"}
+                                    {case value="0"}{:lang('Untreated')}{/case}
+                                    {case value="1"}{:lang('Success')}{/case}
+                                    {case value="2"}{:lang('Cancelled')}{/case}
+                                    {case value="3"}{:lang('Customer Service Audited')}{/case}
+                                {/switch}
+                            </li>
+                            {if condition = "$detail.state eq 1"}
+                                <li>
+                                    <label style="width: 30%">{:lang('Bank Number:')}</label><span>{$detail.bank_finance}</span>
+                                </li>
+                            {/if}
+                            {if condition = "$detail.state eq '2'"}
+                            <li>
+                                <label style="width: 30%">{:lang('Reasons for Cancellation:')}</label><span>{$detail.cancel}</span>
+                            </li>
+                            {/if}
+                            {if condition = "$detail.state eq 0"}
+                                {between name="$admin_info.group_id" value="1,4"}
+                                    <li>
+                                        <label style="width: 30%"><font color="red">{:lang('Operation')}：</font></label>
+                                        <span>
+                                            <input type="radio" name="state"  value="3">{:lang('Confirm')} {:lang('Audit')}
+                                        </span>
+                                        <span>
+                                            <input type="radio" name="state"  value="2">{:lang('Turn Down')} {:lang('Withdrawal')}
+                                        </span>
+                                    </li>
+                                    <li id="delay" style="display: none">
+                                        <label style="width: 30%">{:lang('The Reason for Turn Down')}：</label>
+                                        <span><input type="text" name="cancel" style="width: 200px"></span>
+                                    </li>
+                                {/between}
+                            {elseif condition = "$detail.state eq 3"}
+                                {between name="$admin_info.group_id" value="1,3"}
+                                    <li>
+                                        <label style="width: 30%">{:lang('Operation')}：</label>
+                                        <span>
+                                            <input type="radio" name="state" value="1">{:lang('Confirm')} {:lang('Withdrawal')}
+                                        </span>
+                                        <span>
+                                            <input type="radio" name="state"  value="2">{:lang('Turn Down')} {:lang('Withdrawal')}
+                                        </span>
+                                    </li>
+                                    <li id="delay" style="display: none">
+                                        <label style="width: 30%"><font color="red">{:lang('The Reason for Turn Down')}：</font></label>
+                                        <span>
+                                            <input type="text" name="cancel" style="width: 200px">
+                                        </span>
+                                    </li>
+                                    <li id="delay2" style="display: none">
+                                        <label style="width: 30%"><font color="red">{:lang('Bank Line:')}</font></label>
+                                        <span>
+                                            <input type="text" name="bank_finance" style="width: 200px">
+                                        </span>
+                                    </li>
+                                {/between}
+                            {/if}
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <input type="hidden" name="draw_no" value="{$detail.draw_no}">
+                        <input type="hidden" name="id" value="{$detail.id}">
+                            <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                        {if condition = "$detail.state eq 0"}
+                            {between name="$admin_info.group_id" value="1,4"}
+                                <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                            {/between}
+                        {elseif condition = "$detail.state eq 3"}
+                            {between name="$admin_info.group_id" value="1,3"}
+                                <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                            {/between}
+                        {/if}
+                    </div>
+                </div>
+              </div>
+            </form>
+            <div style="float:left">
+                <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li><a aria-expanded="true">{:lang('ID Information')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                         <ul class="list-unstyled">
+                            <li>
+                                <label style="width: 30%">{:lang('Name of ID')}：</label>{$detail.real_name}
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('ID Number')}：</label>{$detail.idcard}
+                            </li>
+                            {if condition = "$detail.idcard_pic eq '' "}
+                                <li>
+                                    <label style="width: 30%">{:lang('ID Picture:')}</label>没有提交身份证正面照
+                                </li>
+                            {else}
+                                <li>
+                                    <label style="width: 30%">{:lang('ID Picture:')}</label>
+                                </li>
+                                <li>
+                                    <img src='{$detail.idcard_pic}' style="height:333px;"onclick='window.open($(this).attr("src"))'/>
+                                </li>
+                            {/if}
+                        </ul>
+                    </div>
+                </div>
+              </div>
+
+            </div>
+    </div>
+
+</section>
+{/block}
+<!-- /.content -->
+{block name="js"}
+<script>
+    $(function(){
+        $(":radio").click(function(){
+            var check = $(this).val();
+            if (("{$admin_info.group_id}" == 1 || "{$admin_info.group_id}" == 4) && "{$detail.state}" == 0) {
+                if(check == '3'){
+                    $("#delay").css({"display":"none"});
+                }
+                if(check == '2'){
+                    $("#delay").css({"display":""});
+                }
+            } else if(("{$admin_info.group_id}" == 1 || "{$admin_info.group_id}" == 3) && "{$detail.state}" == 3) {
+                if(check == '1'){
+                    $("#delay").css({"display":"none"});
+                    $("#delay2").css({"display":""});
+                }
+                if(check == '2'){
+                    $("#delay").css({"display":""});
+                    $("#delay2").css({"display":"none"});
+                }
+            }
+        });
+    })
+</script>
+<script>
+
+    $(function(){
+        $("#form").validate({
+            rules: {
+                cancel:{
+                    required:true
+                },
+                bank_finance:{
+                    required:true
+                }
+            },
+            submitHandler: function(form) {
+                if ($(":radio:checked").val() == 3 && "{$admin_info.group_id}" == 4) {
+                    text = "{:lang('Please ensure the information is correct,unable to modify and financial will be withdrawaled to the user bank card after audit')}！";
+                } else if ($(":radio:checked").val() == 1 && "{$admin_info.group_id}" == 3) {
+                    text = "{:lang('Please ensure the amount of money has been transferred to the user bank card')}！";
+                } else {
+                    text = '';
+                }
+                swal({
+                    title: "{:lang('Determine Submit')}",
+                    text: text,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "{:lang('Determine')}",
+                    cancelButtonText: "{:lang('Cancel')}",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $.ajax({
+                                url:"{:Url('admin/withdraw/update')}",
+                                data:$(form).serialize(),
+                                type:'post',
+                                dataType:'json',
+                                success: function(xhr){
+                                    if(xhr.code == 200){
+                                        swal({
+                                            title: xhr.msg,
+                                            text: "",
+                                            type: 'success'
+                                        },function(isConfirm){
+                                            window.location.reload();
+                                        });
+                                    } else {
+                                        swal(xhr.msg, "", "error");
+                                    }
+                                }
+                            })
+                        } else {
+                            swal("{:lang('Cancel Operation')}", "", "error");
+                    }
+                });
+            }
+        });
+    });
+</script>
+{/block}

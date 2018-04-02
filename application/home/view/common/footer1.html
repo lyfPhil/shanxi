@@ -1,0 +1,24 @@
+  <div id="footer_wrap">
+    <div id="footer">
+        <div class="footer_navi">
+            <ul id="menu-%e5%b0%be%e9%83%a8%e5%af%bc%e8%88%aa" class="menu">
+                {volist name="RecBottom" id="v"}
+                <li id="menu-item-156" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-156">
+                    <a href="http://localhost/bike/public/index.php/index/{if condition="$v.type eq 1"}artlist{elseif condition="$v.type eq 2"}page{elseif condition="$v.type eq 3"}imglist{/if}/index/cateid/{$v.id}">{$v.catename}</a>
+                </li>
+                {/volist}
+            </ul>
+        </div>
+        <div class="footer_info">
+            <span class="legal">Copyright &#169; 2016-2020 qq群：484519446 版权所有&#160;&#160;&#160;<a href="#">
+                琼ICP备******号</a>&#160;&#160;&#160;
+        </div>
+    </div>
+</div>
+<div style="display: none;" id="scroll">
+</div>
+<script type="text/javascript" src="__PUBLIC__/static/index/style/z700bike_global.js"></script>
+
+
+</body>
+</html>

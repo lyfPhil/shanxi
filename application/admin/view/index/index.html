@@ -1,0 +1,56 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li class="active">控制面板</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+  <div style="text-align:center; line-height:1000%; font-size:24px;">
+        欢迎来到后台系统!
+    </div>
+    <table class="table table-border table-bordered table-bg mt-20">
+        <thead>
+            <tr>
+                <th colspan="2" scope="col">服务器信息</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th width="30%">服务器计算机名</th>
+                <td><span id="lbServerName">http://127.0.0.1/</span></td>
+            </tr>
+            <tr>
+                <td>服务器IP地址</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>服务器域名</td>
+                <td>{$serverInfo.server_version}</td>
+            </tr>
+            <tr>
+                <td>获取服务器时间 </td>
+                <td>{$serverInfo.server_time}</td>
+            </tr>
+            <tr>
+                <td>上传文件大小限制 </td>
+                <td>{$serverInfo.max_upload}</td>
+            </tr>
+            <tr>
+                <td>脚本最大执行时间 </td>
+                <td>{$serverInfo.max_ex_time}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!-- /Page Body -->
+{/block}
+
+{block name="js"}
+
+{/block}

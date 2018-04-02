@@ -1,0 +1,69 @@
+<!-- Page Sidebar Header-->
+<div class="sidebar-header-wrapper">
+  <input class="searchinput" type="text">
+  <i class="searchicon fa fa-search"></i>
+  <div class="searchhelper">搜索您想要的信息！</div>
+</div>
+<!-- /Page Sidebar Header -->
+
+<!-- Sidebar Menu -->
+<ul class="nav sidebar-menu">
+  
+  {cms:menu name="vo"}
+      {notempty  name="vo.child"}
+      <li class="{$vo.open}">
+        <a class="menu-dropdown">
+          <i class="menu-icon {$vo.icon}"></i>
+          <span class="menu-text">{$vo.name}</span>
+          <i class="menu-expand"></i>
+        </a>
+        <ul class="submenu">
+          {volist name="vo.child" id="son"}
+            {notempty  name="son.child"}
+            <li class="{$son.open}">
+                <a href="#" class="menu-dropdown">
+                  <i class="menu-icon {$son.icon}"></i>
+                  <span class="menu-text">
+                      {$son.name}
+                  </span>
+                  <i class="menu-expand"></i>
+              </a>
+              <ul class="submenu">
+                  {volist name="son.child" id="gson"}
+                  <li class="{$gson.class}">
+                      <a href="{$gson.url}">
+                          <span class="menu-text">
+                              {$gson.name}
+                          </span>
+                      </a>
+                  </li>
+                  {/volist}
+              </ul>
+            </li>
+            {else /}
+            <li class="{$son.class}">
+                <a href="{$son.url}" class="menu-dropdown">
+                  <i class="menu-icon {$son.icon}"></i>
+                  <span class="menu-text">
+                      {$son.name}
+                  </span>
+                  
+              </a>
+            </li>
+            {/notempty}
+          {/volist}
+        </ul>
+      </li>
+      {else /}
+      <li class="{$vo.class}">
+        <a href="{$vo.url}">
+          <i class="menu-icon fa {$vo.icon}"></i>
+          <span class="menu-text">{$vo.name}</span>
+          <i class="menu-expand"></i>
+        </a>
+      </li>
+      {/notempty}
+  {/cms:menu}
+
+</ul>
+

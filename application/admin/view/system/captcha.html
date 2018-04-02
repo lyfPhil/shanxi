@@ -1,0 +1,171 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    验证码{:lang('Setting')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('System')}</a></li>
+    <li class="active">验证码{:lang('Setting')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Parameter Settings')}</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Open')}选项</label>
+                                    <div class="col-sm-10">
+                                        <label class="checkbox-inline">
+                                          <input {if condition = "(in_array('1', $open_captcha))"}checked{/if} type="checkbox" name="open_captcha[]" value="1">
+                                          [1]前台注册
+                                        </label>
+                                        <label class="checkbox-inline">
+                                          <input {if condition = "(in_array('2', $open_captcha))"}checked{/if} type="checkbox" name="open_captcha[]" value="2">
+                                          [2]前台{:lang('Login')}
+                                        </label>
+                                        <label class="checkbox-inline">
+                                          <input {if condition = "(in_array('3', $open_captcha))"}checked{/if} type="checkbox" name="open_captcha[]" value="3">
+                                          [3]会员{:lang('Contribute')}
+                                        </label>
+                                        <label class="checkbox-inline">
+                                          <input {if condition = "(in_array('4', $open_captcha))"}checked{/if} type="checkbox" name="open_captcha[]" value="4">
+                                          [4]文档评论
+                                        </label>
+                                        <label class="checkbox-inline">
+                                          <input {if condition = "(in_array('5', $open_captcha))"}checked{/if} type="checkbox" name="open_captcha[]" value="5">
+                                          [5]后台{:lang('Login')}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Chinese Characters')}</label>
+                                    <div class="col-sm-5">
+                                        <label class="radio-inline">
+                                            <input type="radio" {eq name="useZh" value="1"}checked{/eq} name="useZh" value="1"> {:lang('Open')}
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" {eq name="useZh" value="0"}checked{/eq} name="useZh" value="0"> 关闭
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Interference Background')}</label>
+                                    <div class="col-sm-5">
+                                        <label class="radio-inline">
+                                            <input type="radio" {eq name="useCurve" value="1"}checked{/eq} name="useCurve" value="1"> {:lang('Open')}
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" {eq name="useCurve" value="0"}checked{/eq} name="useCurve" value="0"> 关闭
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('The Font Size')}</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="fontSize" value="{$fontSize}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Height')}</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="imageH" value="{$imageH}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Width')}</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="imageW" value="{$imageW}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Length')}</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="length" value="{$length}" class="form-control">
+                                    </div>
+                                </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                key: {
+                    required: true,
+                    maxlength: 150
+                },
+                name: {
+                    required: true,
+                    maxlength: 150
+                }
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!");
+                $.ajax({
+                    url:"{:url('admin/system/editCaptcha')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

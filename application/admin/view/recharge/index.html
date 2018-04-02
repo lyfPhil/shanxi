@@ -1,0 +1,178 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Recharge List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Financial')}</a></li>
+    <li class="active">{:lang('Recharge List')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+             
+            <form method="get" class="form-inline">
+                <div class="row">
+                    <div class="form-group col-lg-3">
+                        <span class="input-group">{:lang('Recharge Number:')}</span>
+                        <div class="input-group">
+                            <input type="text"  name="charge_no" value="{$search.charge_no|default=""}" class="form-control" placeholder="{:lang('Please Input')} {:lang('Recharge Number')}">
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3">
+                        <span class="input-group">{:lang('User Name:')}</span>
+                        <div class="input-group">
+                            <input type="text"  name="user_name" value="{$search.user_name|default=""}" class="form-control" placeholder="{:lang('Please Input')} {:lang('The User Account')}">
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-5">
+                        <span class='input-group'>{:lang('Create Time:')}</span>
+                        <div class="form-group">
+                            <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The Start Time')}">
+                        </div>-
+                        <div class="form-group">
+                            <input type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The End Time')}">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-lg-3 form-group">
+                        <span class="input-group">{:lang('Recharge Method:')}</span>
+                        <div class="input-group">
+                            <select class="form-control" name="pay_type">
+                                <option value="">{:lang('All')}</option>
+                                {volist name="pay_type" id="vo" key="key"}
+                                <option value="{$key-1}"{notempty name="search.pay_type"}{eq name="search.pay_type" value="$key-1"}selected{/eq}{/notempty}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 form-group">
+                        {if condition = "($group_id eq '1') or ($group_id eq '2')" }
+                        <span class="input-group">{:lang('Status:')}</span>
+                        <div class="input-group col-lg-9" >
+                            <select class="form-control" name="state">
+                                <option value="">{:lang('All')}</option>
+                                <option {notempty name="search.state"}{eq name="search.state" value="2"}selected{/eq}{/notempty} value="0">{:lang('Untreated')}</option>
+                                <option {notempty name="search.state"}{eq name="search.state" value="1"}selected{/eq}{/notempty} value="1">{:lang('Processing is Complete')}</option>
+                                <option {notempty name="search.state"}{eq name="search.state" value="0"}selected{/eq}{/notempty} value="2">{:lang('Cancelled')}</option>
+                                <option {notempty name="search.state"}{eq name="search.state" value="0"}selected{/eq}{/notempty} value="3">{:lang('Treasurer Audited')}</option>
+                            </select>
+                            
+                        </div>
+                        {/if}
+                    </div>
+                    <div class="form-group col-lg-1">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                        </span>
+                    </div>
+                    <div class="form-group col-lg-1">
+                        <a class="btn btn-default btn-flat" href="{:Url('admin/recharge/index')}">{:lang('Reset The Search')}</a>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{:lang('Recharge Number')}</th>
+                            <th>{:lang('User Name')}</th>
+                            <th>{:lang('Recharge Method')}</th>
+                            <th>{:lang('Bank Name')}</th>
+                            <th>{:lang('Bank Card Number')}</th>
+                            <th>{:lang('The Amount of Recharge Money')}(THB) </th>
+                            <th>{:lang('Processing Status')}</th>
+                            <th>{:lang('Create Time')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.charge_no}</td>
+                        <td>{$vo.user_name}</td>
+                        <td>{$vo.pay_type}</td>
+                        <td>{$vo.bank_name}</td>
+                        <td>{$vo.bank_card}</td>
+                        <td>{$vo.cash}</td>
+                        <td>
+                            {switch name="vo.state"}
+                                {case value="0"}{:lang('Untreated')}{/case}
+                                {case value="1"}{:lang('Success')}{/case}
+                                {case value="2"}{:lang('Cancelled')}{/case}
+                                {case value="3"}{:lang('Treasurer Audited')}{/case}
+                            {/switch}
+                        </td>
+                        <td>{$vo.create_time|date = "Y-m-d H:i:s",###}</td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                                <small class="label bg-light-blue"><i class="fa fa-check"></i></small>
+                            {else/}
+                                <small class="label bg-gray"><i class="fa fa-times"></i></small>
+                            {/eq}
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{:Url('admin/recharge/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-offset-6 col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd hh:ii:ss",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 0//日期{:lang('Time')}{:lang('Choose')}器所能够提供的最精确的{:lang('Time')}{:lang('Choose')}视图
+ });
+</script>
+{/block}

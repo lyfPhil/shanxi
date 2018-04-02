@@ -1,0 +1,193 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>用户</a></li>
+        <li><a>后台用户</a></li>
+        <li><a href="{:url('group/index')}">用户组列表</a></li>
+        <li>创建用户组</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">基本信息</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户组名称</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="name" class="form-control">
+                            </div>
+                            <div class="col-sm-5"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注</label>
+                            <div class="col-sm-5">
+                                <textarea class="form-control" name="remark"></textarea>
+                            </div>
+                            <div class="col-sm-5"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">权限分配</label>
+                            <div class="col-sm-10">
+                                <div class="table-responsive">
+        <table cellpadding="1" cellspacing="1" class="table">
+            <thead>
+                <tr>
+                    <th width="1%"></th>
+                    <th width="20%">根分类</th>
+                    <th width="20%">控制器</th>
+                    <th>方法</th>
+                    <th>附加</th>
+                </tr>
+            </thead>
+            {volist name="data.ruleList" id="vo"}
+            <tr>
+                <td></td>
+                <td>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="rules[]" value="{$vo.id}">
+                            {$vo.name}
+                        </label>
+                    </div>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+                {notempty  name="vo.child"}
+                    {volist name="vo.child" id="son"}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="rules[]" value="{$son.id}">
+                                    {$son.name}
+                                </label>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                        {notempty  name="son.child"}
+                            {volist name="son.child" id="grandSon"}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="rules[]" value="{$grandSon.id}">
+                                            {$grandSon.name}
+                                        </label>
+                                    </div>
+
+                                    <td>
+                                    {notempty  name="grandSon.child"}
+                                    {volist name="grandSon.child" id="regrandSon"}
+
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="rules[]" value="{$regrandSon.id}">
+                                                {$regrandSon.name}
+                                            </label>
+                                        </div>
+                                    {/volist}
+                                    {/notempty}
+                                    </td>
+                                </td>
+                            </tr>
+                            {/volist}
+                        {/notempty}
+                    {/volist}
+                {/notempty}
+            {/volist}
+        </table>
+                                </div>
+                            </div>
+                        </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="btn-group">
+                            <button class="btn btn-default btn-flat" type="reset">取消</button>
+                            <button class="btn btn-primary btn-flat" id="submit" type="submit">保存</button>
+                        </div>
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返回</a>
+                    </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 64
+                }
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!"); -->
+                $.ajax({
+                    url:"{:Url('admin/group/store')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

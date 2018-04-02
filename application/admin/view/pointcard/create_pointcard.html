@@ -1,0 +1,195 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Add Point-Card')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('The Game')}</a></li>
+    <li class="active">{:lang('Add Point-Card')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Basic Information')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Point-Card Name')}</label>
+                                    <div class="col-sm-3">
+                                        <input type="hidden" name="type" value="2">
+                                        <input type="text" name="game_name" class="form-control">
+                                    </div>
+                                    <label class="col-sm-1 control-label">{:lang('The First Letter')}</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="initial"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Release Status')}</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline">
+                                            <input type="radio"  name="status" value="-1"> {:lang('Close')}
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="status" value="1"> {:lang('Open')}
+                                        </label>
+                                    </div>
+                                    <label class="col-sm-1 control-label">{:lang('Whether to Recommend')}</label>
+                                    <div class="col-sm-3">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="recommend_status" value="0"> {:lang('NO')}
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="recommend_status" value="1"> {:lang('YES')}
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="recommend_status" value="2"> {:lang('Hot')}
+                                        </label>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Point-Card Icon')}</label>
+                                    <div class="col-sm-3">
+                                        <div id="img"> </div>
+                                        <input id="files" type="file" name="images" multiple="multiple" class="file" data-preview-file-type="text">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Recommend Index')}</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="tuinum" class="form-control">
+                                    </div>
+                                    <label class="col-sm-1 control-label">{:lang('The Sorting')}</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="sort"  class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Point-Card Introduce')}</label>
+                                    <div class="col-sm-7">
+                                        {cms:ueditor name='game_info'/}{/cms:ueditor}
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                        <div class="btn-group ">
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<!--./{:lang('Upload Pictures')}-->
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/fileinput/css/fileinput.css">
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/canvas-to-blob.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/sortable.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/purify.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/fileinput.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/locales/zh.js"></script>
+<script type="text/javascript">
+// with plugin options
+$("#files").fileinput({'showUpload':true,
+    'previewFileType':'any',
+    'maxFileCount': 1,
+    'language':'zh',
+    'enctype':'multipart/form-data',
+    'allowedFileTypes':['image'] ,//['image', 'html', 'text', 'video', 'audio', 'flash', 'object']
+    'allowedFileExtensions':['jpg', 'gif', 'png'],
+    'uploadUrl':"{:url('admin/ueditor/uploadimage')}",
+    'showUploadedThumbs':true,
+    'dropZoneEnabled': false,//是否{:lang('Display')}拖拽区域
+    // for image files
+    // for image config
+});
+$("#files").on("fileuploaded", function (event, data, previewId, index) {
+    var obj = data.response;
+    var fileName = '<input type="hidden" name="cover" value="'+ obj.data.saveName +'" >';
+    $("#img").html(fileName);
+});
+$('#files').on('filesuccessremove', function(event, id) {
+    // console.log('Uploaded thumbnail successfully removed');
+    $("#img").empty();
+});
+</script>
+
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 150
+                },
+                count: {
+                    number: true,
+                },
+                content: {
+                    required: true,
+                },
+            },
+            submitHandler: function(form) {
+                // alert("submitted!");
+                $.ajax({
+                    url:"{:url('admin/pointcard/store')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}
+

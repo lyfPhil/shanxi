@@ -1,0 +1,259 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+    th{
+        text-align: center;
+    }
+</style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>评论管理</a></li>
+        <li><a>景点文章评论</a></li>
+        <li>评论列表</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <div class="pull-left">
+                <div class="col-sm-1">
+                    <form method="post" class="form-inline">
+                        <div class="input-group">
+                            <div>
+                                <select id="type" class="form-control">
+                                    <option value="change">审核通过</option>
+                                    <option value="cancel">取消通过</option>
+                                    <option value="delete">删除</option>
+                                </select>
+                            </div>
+                            <span class="input-group-btn">
+                                <button type="button" onclick="apply()" class="btn btn-primary btn-flat"><i class="fa fa-save"></i>应用</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <form method="get" class="form-inline">
+                    <span class="input-group">创建时间：</span>
+                    <div class="input-group" style="width:18%">
+                        <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="开始时间">
+                    </div>-
+                    <div class="input-group" style="width:18%">
+                        <input type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="结束时间">
+                    </div>
+                    <div class="input-group">
+                        <select class="form-control" name="status">
+                            <option value=''>审核状态</option>
+                            <option {notempty name="search.status"}{eq name="search.status" value="0"}selected{/eq}{/notempty} value="0">等待审核</option>
+                            <option {notempty name="search.status"}{eq name="search.status" value="1"}selected{/eq}{/notempty} value="1">审核通过</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="{:lang('The Article Title')}">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">搜索</button>
+                      </span>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-default btn-flat" href="{:Url('admin/comment/articlecomment')}">重置搜索</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                <table class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>#ID</th>
+                            <th>文章标题</th>
+                            <th>内容</th>
+                            <th>作者</th>
+                            <th>审核状态</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="data" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.article_name}</td>
+                        <td width="50%">{$vo.content}</td>
+                        <td>{defined name="user[$vo.from_uid]"}{$users[$vo.from_uid]['username']}{/defined}</td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                            <small class="label bg-green"><i class="glyphicon glyphicon-ok"></i></small>
+                            {else/}
+                            <small class="label bg-red"><i class="glyphicon glyphicon-remove"></i></small>
+                            {/eq}
+                        </td>
+                        <td>{$vo.create_at}</td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/comment/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                            <!--<a onClick="deleteOne({$vo.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>-->
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="pull-left">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+ <script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+ <!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期
+ });
+</script>
+
+<script>
+    function deleteOne(id){
+            swal({
+                title: "确定要删除这条记录吗？",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/comment/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("操作已取消", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "没有选择任何记录!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "确定要执行操作吗？",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/comment/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "确定",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "确定",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("操作已取消", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

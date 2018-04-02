@@ -1,0 +1,176 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="#">系统</a></li>
+        <li><a href="{:url('rule/index')}">路由规则</a></li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+<!-- Page Body -->
+<div class="page-body">
+    <!-- Main content -->
+    <div class="box box-solid">
+        <div class="row">
+        <div class="col-lg-12 col-sm-12 col-xs-12">
+        <div class="widget">
+            <div class="widget-header bordered-bottom bordered-blue">
+                <span class="widget-caption">修改路由规则</span>
+            </div>
+            <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+            <input type="hidden" name="id" value="{$info.id}">
+              <div class="nav-tabs-custom">
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">上级路由</label>
+                            <div class="col-sm-3">
+                                <select class="form-control" name="parent_id">
+                                    <option value="0">根路由</option>
+                                    {volist name="list" id="vo"}
+                                    <option {eq name="info.parent_id" value="$vo.id"}selected{/eq} value="{$vo.id}">{$vo.html}{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">名称</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="name" value="{$info.name}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">模块</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="module" value="{$info.module}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">控制器</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="controller" value="{$info.controller}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">方法</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="action" value="{$info.action}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">是否显示</label>
+                            <div class="col-sm-5">
+                                <div class="col-sm-5">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="is_menu" {eq name="info.is_menu" value="1"}checked{/eq} value="1"> 显示
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="is_menu" {eq name="info.is_menu" value="0"}checked{/eq} value="0"> 隐藏
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">菜单图标</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="icon" value="{$info.icon}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">排序</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="reorder" value="{$info.reorder}" class="form-control">
+                            </div>
+                        </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="btn-group">
+                            <button class="btn btn-default btn-flat" type="reset">取消</button>
+                            <button class="btn btn-primary btn-flat" id="submit" type="submit">保存</button>
+                        </div>
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返回</a>
+                    </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+        </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            errorElement: 'span',
+            errorClass: 'help-block',
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 64
+                },
+                module: {
+                    required: true,
+                    maxlength: 64
+                },
+                controller: {
+                    required: true,
+                    maxlength: 64
+                },
+                action: {
+                    required: true,
+                    maxlength: 64
+                }
+            },
+            highlight : function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success : function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            submitHandler: function(form) {
+                $.ajax({
+                    url:"{:url('admin/rule/update')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

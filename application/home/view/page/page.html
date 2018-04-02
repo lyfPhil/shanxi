@@ -1,0 +1,57 @@
+{include file="common/header" title="<?php echo($title); ?>" /}
+<div id="wrapper">
+    <div id="container">
+        <div id="content">
+            <div class="post" id="post-19563" style="border-right: solid 1px #000000; min-height: 1700px;
+                margin-top: 10px;">
+                <div class="path">
+                    <a href='{:url('index/index')}'>主页</a> >
+                    {volist name="arr" id="v"}
+                        {if condition="$v.type eq 1"}
+                        <a href='{:url('artlist/index',array('cateid'=>$v.id))}'>{$v['catename']}</a>>
+                        {elseif condition="$v.type eq 2"}
+                        <a href='{:url('page/index',array('cateid'=>$v.id))}'>{$v['catename']}</a>>
+                        {elseif condition="$v.type eq 3"}
+                        <a href='{:url('imglist/index',array('cateid'=>$v.id))}'>{$v['catename']}</a>>
+                        {/if}
+                    {/volist}
+                </div>
+                <div class="single_entry page_entry" style="margin-top:30px;">
+                    <div class="entry" >
+                        {$cates.content}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="xh_sidebar">
+        <!-- 右侧 -->
+            <div class="widget">
+
+                <div style="background: url('__PUBLIC__/static/index/images/hots_bg.png') no-repeat scroll 0 0 transparent;width:250px;height:52px;margin-bottom:15px;">
+                </div>
+                {volist name="hotRes" id="v"}
+                <ul id="ulHot">
+                    <li style="border-bottom:dashed 1px #ccc;height:70px; margin-bottom:15px;">
+                        <div style="float:left;width:85px;height:55px; overflow:hidden;">
+                            <a href="{:url('article/index',array('artid'=>$v.id))}" target="_blank"><img src="{$v.thumb}" width="83" title="{$v.title}" /></a>
+                        </div>
+                        <div style="float:right;width:145px;height:52px; overflow:hidden;">
+                            <a href="{:url('article/index',array('artid'=>$v.id))}" target="_blank" title="{$v.title}">{$v.title}</a>
+                        </div>
+                    </li>
+                </ul>
+                {/volist}
+            </div>
+            <div class="widget portrait">
+                <div class="textwidget">
+                    <a href="/tougao.html"><img src="__PUBLIC__/static/index/images/tg.jpg" alt="鎶曠ǹ"></a><br><br>
+                    <script type="text/javascript">BAIDU_CLB_fillSlot("870073");</script>
+                    <script type="text/javascript">BAIDU_CLB_fillSlot("870080");</script>
+                    <script type="text/javascript">BAIDU_CLB_fillSlot("870081");</script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ {include file="common/footer" /}

@@ -1,0 +1,89 @@
+<!--header-->
+
+<div class="header">
+	<div class="container">
+		<div class="header-grids">
+			<div class="logo">
+				<h1><a  href="index.html"><span>去</span>山西旅行</a></h1>
+			</div>
+			<!--navbar-header-->
+			<div class="header-dropdown">
+				<div class="emergency-grid">
+					<ul>
+						<li>免费咨询电话 : </li>
+						<li class="call">+86 136 3178 5655</li>
+					</ul>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+		<div class="nav-top">
+			<div class="top-nav">
+				<span class="menu"><img src="images/menu.png" alt="" /></span>
+				<ul class="nav1">
+					<li class="active"><a href="{:url('index')}">机票</a></li>
+					<li><a href="{:url('hotels')}">酒店</a></li>
+					<li><a href="{:url('holidays')}">假期</a></li>
+					<li><a href="{:url('flights_hotels')}">机票+酒店</a></li>
+					<li><a href="{:url('bus')}">巴士</a></li>
+					<li><a href="{:url('trains')}">火车</a></li>
+					<li><a href="{:url('weekend')}">周末逍遥游</a></li>
+					<li><a href="{:url('deals')}">景区门票</a></li>
+					<li><a href="{:url('blog')}">博客</a></li>
+				</ul>
+				<div class="clearfix"> </div>
+				<!-- script-for-menu -->
+				 <script> 
+				   	$( "span.menu" ).click(function() {
+						$( "ul.nav1" ).slideToggle( 300, function() {
+						 });
+					});
+					$( ".nav1.li" ).click(function() {
+						$( "ul.li" ).addClass('active');
+					});
+					
+				</script>
+				<!-- /script-for-menu -->
+			</div>
+			<div class="dropdown-grids">
+					<div id="loginContainer"><a href="#" id="loginButton"><span>登录</span></a>
+						<div id="loginBox">                
+							<form id="loginForm" method="post">
+								<div class="login-grids">
+									<div class="login-grid-left">
+										<fieldset id="body">
+											<fieldset>
+												<label for="email">用户名/邮箱/邮箱</label>
+												<input type="text" name="username" id="email">
+											</fieldset>
+											<fieldset>
+												<label for="password">密码</label>
+												<input type="password" name="password" id="password">
+											</fieldset>
+											<input type="submit" id="login" value="登录">
+											<label for="checkbox"><input type="checkbox" id="checkbox"> <i>记住我</i></label>
+										</fieldset>
+										<span><a href="#">忘记密码?</a></span>
+										<div class="or-grid">
+											<p>OR</p>
+										</div>
+										<div class="social-sits">
+											<i class="fab fa-qq"><a href="#">QQ登录</a></i>
+											<i class="fab fa-weixin"><a href="#">微信登录</a></i>
+											<div class="button-bottom">
+												<p>没有账号? <a href="signup">注册</a></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+</div>
+<!--/header-->
+

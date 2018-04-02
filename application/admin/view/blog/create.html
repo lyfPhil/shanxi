@@ -1,0 +1,227 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>景点文章</a></li>
+        <li><a href="{:url('blog/index')}">文章列表</a></li>
+        <li>创建文章</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+    <div class="box box-solid">
+       <form method="post" id="form" action="" class="form-horizontal">
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Basic Information')}</a></li>
+                  <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">{:lang('Upload Pictures')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('The Title')}</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="title" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Classified')}</label>
+                            <div class="col-sm-3">
+                                <select class="form-control" name="category_id">
+                                    {volist name="category" id="vo"}
+                                    <option value="{$vo.id}">{$vo.html}{$vo.title}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Push')}</label>
+                            <div class="col-sm-3">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="recommend" value="1"> {:lang('Recommended')}
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="hot" value="0"> {:lang('Hot')}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">所属城市</label>
+                            <div class="col-sm-3">
+                                <select class="selectpicker show-tick form-control" name="city_id" data-live-search="true">
+                                    {volist name="source" id="vo"}
+                                    <option value="{$vo.id}" name="city_id">{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Page Views')}</label>
+                            <div class="col-sm-3">
+                                <input type="text" name="pv" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('The Brief')}</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Content')}</label>
+                            <div class="col-sm-10">
+                                {cms:ueditor name='content'/}{/cms:ueditor}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Keywords')}</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="keywords" class="form-control">
+                                <span class="help-block m-b-none">多个{:lang('Keywords')}请用逗号隔开. 例如:tag1,tag2</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Status')}</label>
+                            <div class="col-sm-9">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="0"> {:lang('The Shelves')}
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1"> 上架
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <!-- /.这个容器用来存储上传的{:lang('Picture')}文件信息 -->
+                                <div id="img"> </div>
+                                <input id="files" type="file" name="images" multiple="multiple" class="file" data-preview-file-type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                    </div>
+                    <div class="btn-group ">
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返 回</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- nav-tabs-custom -->
+        </form>
+    </div>
+</div>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<!--./{:lang('Upload Pictures')}-->
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/fileinput/css/fileinput.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-select.min.css">
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/canvas-to-blob.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/sortable.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/purify.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/fileinput.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/locales/zh.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+// with plugin options
+$("#files").fileinput({'showUpload':true, 
+    'previewFileType':'any',
+    'maxFileCount':1,
+    'language':'zh',
+    'enctype':'multipart/form-data',
+    'allowedFileTypes':['image'],//['image', 'html', 'text', 'video', 'audio', 'flash', 'object']
+    'allowedFileExtensions':['jpg', 'gif', 'png'],
+    'uploadUrl':"{:url('admin/ueditor/uploadImage')}",
+    'showUploadedThumbs':true,
+    // for image files
+});
+
+$("#files").on("fileuploaded", function (event, data, previewId, index) {
+    var obj = data.response;
+    var fileName = '<input type="hidden" name="image" value="'+ obj.data.saveName +'" >';
+    $("#img").html(fileName);
+});
+
+$('#files').on('filesuccessremove', function(event, id) {
+    // console.log('Uploaded thumbnail successfully removed');
+    $("#img").empty();
+});
+<!--./{:lang('Upload Pictures')}-->
+</script>
+
+<script>
+    $(function(){
+        $("#form").validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 150
+                },
+                keywords:{
+                    required: true
+                },
+                count: {
+                    number: true,
+                },
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!");
+                $.ajax({
+                    url:"{:url('admin/blog/store')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        
+    });
+</script>
+<script>  
+    $(function() {  
+        $('.selectpicker').selectpicker({  
+            size: 10,
+            style: 'default',
+            noneSelectedText: '{:lang('Please Select')}'
+
+        });  
+        $('.selectpicker').selectpicker('refresh');
+    });  
+</script>  
+{/block}

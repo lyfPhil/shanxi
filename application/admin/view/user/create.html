@@ -1,0 +1,190 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>用户</a></li>
+        <li><a>后台用户</a></li>
+        <li><a href="{:url('user/index')}">管理员列表</a></li>
+        <li>添加管理员</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-body no-padding">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#" data-toggle="tab">管理员信息</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                        {eq name="user.group_id" value="1"}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">ID</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="id" class="form-control">
+                            </div>
+                        </div>
+                        {/eq}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">账号</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="username" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-5">
+                                <input type="password" id="password" name="password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">确认密码</label>
+                            <div class="col-sm-5">
+                                <input type="password" name="confirm_password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">邮箱</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="email" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">手机号</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="mobile" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">国家号</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="country_code" value="86" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">注册IM</label>
+                            <div class="col-sm-5">
+                                <label class="radio-inline">
+                                    <input  value="1" type="radio" name="reg_im">是
+                                </label>
+                                <label class="radio-inline">
+                                    <input value="-1" type="radio" checked="checked" name="reg_im">否
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">权限组</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" name="group_id">
+                                    {volist name="data.groupList" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="col-sm-5"></div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+              </div>
+              <!-- nav-tabs-custom -->
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-flat" type="reset">取消</button>
+                        <input class="btn btn-primary btn-flat" id="submit" type="submit" value="保存">
+                    </div>
+                    <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返回</a>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                id:{
+                    digits:true,
+                    range:"[1,99999]"
+                },
+                username: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 32
+                },
+                password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 32
+                },
+                confirm_password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 32,
+                    equalTo: "#password"
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                phone: {
+                    required: true,
+                    number: true
+                }
+            },
+            submitHandler: function(form) {
+                $.ajax({
+                    url:"{:Url('admin/user/store')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                            window.location.href="{:url('admin/user/index')}";
+                        } else {
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

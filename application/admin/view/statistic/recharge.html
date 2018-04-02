@@ -1,0 +1,112 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Statistical')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li class="active">{:lang('Statistical')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+      <div class="col-md-9">
+          <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">{:lang('Recharge Times')}</h3>
+              <div class="box-tools pull-right">
+                  <form method="get">
+                    <label>{:lang('Interval Screening:')}</label>
+                    <select name="date">
+                        <option {notempty name="search.date"}{eq name="search.date" value="7"}selected{/eq}{/notempty} value="7">{:lang('The Previous Week')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="14"}selected{/eq}{/notempty} value="14">{:lang('The First Two Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="21"}selected{/eq}{/notempty} value="21">{:lang('The First Three Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="30"}selected{/eq}{/notempty} value="30">{:lang('The First 30 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="60"}selected{/eq}{/notempty} value="60">{:lang('The First 60 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="180"}selected{/eq}{/notempty} value="180">{:lang('First Half of The Year')}</option>
+                    </select>
+                    <button type="submit">{:lang('Confirm')}</button>
+                  </form>
+              </div>
+            </div>
+            <div class="box-body chart-responsive">
+              <div class="chart" id="line-chart" style="height: 400px"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      </div>
+      <div class="col-md-9">
+          <!-- BAR CHART -->
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">{:lang('Recharge Amount (HKD)')}</h3>
+
+              <div class="box-tools pull-right">
+                  <form method="get">
+                    <label>{:lang('Interval Screening:')}</label>
+                    <select name="date">
+                        <option {notempty name="search.date"}{eq name="search.date" value="7"}selected{/eq}{/notempty} value="7">{:lang('The Previous Week')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="14"}selected{/eq}{/notempty} value="14">{:lang('The First Two Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="21"}selected{/eq}{/notempty} value="21">{:lang('The First Three Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="30"}selected{/eq}{/notempty} value="30">{:lang('The First 30 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="60"}selected{/eq}{/notempty} value="60">{:lang('The First 60 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="180"}selected{/eq}{/notempty} value="180">{:lang('First Half of The Year')}</option>
+                    </select>
+                    <button type="submit">{:lang('Confirm')}</button>
+                  </form>
+              </div>
+            </div>
+            <div class="box-body chart-responsive">
+              <div class="chart" id="bar-chart" style="height: 400px;"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+  </div>
+</section>
+<!-- /.content -->
+{/block}
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/adminlte/css/morris.css">
+<script type="text/javascript" src="__STATIC__/static/adminlte/js/morris.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/adminlte/js/raphael.min.js"></script>
+<script>
+  $(function () {
+    "use strict";
+    // LINE CHART
+    var line = new Morris.Line({
+      element: 'line-chart',
+      resize: true,
+      data:{$recharge_data_num},
+      xkey: 'date',
+      ykeys: ['recharge_num'],
+      labels: ['{:lang('Recharge Times')}:'],
+      lineColors: ['#3c8dbc'],
+      hideHover: 'auto',
+      parseTime: false
+    });
+    //BAR CHART
+    var bar = new Morris.Bar({
+      element: 'bar-chart',
+      resize: true,
+      data: {$recharge_data},
+      barColors: ['#00a65a', '#f56954'],
+      xkey: 'date',
+      ykeys: ['recharge_cash'],
+      labels: ['{:lang('Recharge Amount')}:'],
+      hideHover: 'auto',
+      parseTime: 'false'
+    });
+  });
+</script>
+{/block}
+

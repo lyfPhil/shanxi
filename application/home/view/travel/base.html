@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>山西旅行</title>
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Govihar Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+	Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- //Custom Theme files -->
+<link href="__STATIC__/travel/css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="__STATIC__/travel/css/style.css" type="text/css" rel="stylesheet" media="all">
+<link rel="stylesheet" href="__STATIC__/travel/css/flexslider.css" type="text/css" media="screen" />
+<link type="__STATIC__/travel/text/css" rel="stylesheet" href="css/JFFormStyle-1.css" />
+
+<!-- js -->
+<script src="__STATIC__/travel/js/jquery.min.js"></script>
+<script src="__STATIC__/travel/js/modernizr.custom.js"></script>
+<!-- //js -->
+<!-- fonts -->
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,500italic,700italic,900,900italic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+<!-- //fonts -->	
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#horizontalTab').easyResponsiveTabs({
+			type: 'default', //Types: default, vertical, accordion           
+			width: 'auto', //auto or any width like 600px
+			fit: true   // 100% fit in a container
+		});
+	});
+</script>
+<!--pop-up-->
+<script src="__STATIC__/travel/js/menu_jquery.js"></script>
+<!-- sweetalert -->
+<link rel="stylesheet" href="__STATIC__/static/sweetalert/sweet-alert.css">
+<!-- <script src="__STATIC__/static/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/static/ueditor/ueditor.all.min.js"></script>
+<script src="__STATIC__/static/ueditor/lang/zh-cn/zh-cn.js"></script> -->
+
+<!--//pop-up-->	
+{block name="style"}{/block}
+</head>
+<body>
+
+	{include file="travel/header" /}
+
+	{block name="banner"}  {/block}
+	{block name="content"}  {/block}
+	
+	{include file="travel/footer" /}
+
+
+<!-- jQuery 2.2.3 -->
+<!-- <script src="__STATIC__/static/jquery/jquery-2.2.3.min.js"></script> -->
+<!-- Bootstrap 3.3.6 -->
+<!-- <script src="__STATIC__/static/bootstrap/js/bootstrap.min.js"></script> -->
+<!-- jquery-validation -->
+<script src="__STATIC__/static/jquery-validation/jquery.validate.min.js"></script>
+<script src="__STATIC__/static/jquery-validation/jquery.validate.zh.js"></script>
+<!-- sweetalert -->
+<script src="__STATIC__/static/sweetalert/sweet-alert.min.js"></script>
+<script defer src="__STATIC__/travel/js/jquery.flexslider.js"></script>
+<script src="__STATIC__/travel/js/easyResponsiveTabs.js" type="text/javascript"></script>
+<script src="__STATIC__/travel/js/jquery-ui.js"></script>
+<script type="text/javascript" src="__STATIC__/travel/js/script.js"></script>
+
+<script type="text/javascript">
+$("#login").click(function(){
+    login();
+});
+
+function login() {
+	console.log($("[name='username']").val());
+	$.ajax({
+		url: "{:url('home/user/out')}",
+		type: 'POST',
+		dataType: 'json',
+		data: {username: $("[name='username']").val(),
+			   password: $("[name='password']").val()
+			},
+	})
+	.done(function() {
+		console.log("success");
+	})
+	.fail(function() {
+		console.log("error");
+	})
+	.always(function() {
+		console.log("complete");
+	});
+	
+
+	// $.ajax({
+ //        url:"{:Url('home/user/doLogin')}",
+ //        data:$("[name='username']").val(),
+ //        type:'post',
+ //        dataType:'json',
+ //        success:function(xhr){
+ //            if(xhr.code == 200){
+ //                swal({
+ //                    title: xhr.msg,
+ //                    text: "",
+ //                    type: "success",
+ //                    confirmButtonText: '确定',
+ //                    cancelButtonText: '取消',
+ //                });
+ //                window.location.href="{:url('home/travel/blog')}";
+ //            } else {
+ //                swal({
+ //                    title: xhr.msg,
+ //                    text: "",
+ //                    type: "error",
+ //                    confirmButtonText: '确定',
+ //                    cancelButtonText: '取消',
+ //                });
+ //            }
+ //        }
+ //    });
+    
+}
+</script>
+	
+    
+{block name="js"}{/block}	
+</body>
+</html>

@@ -1,0 +1,107 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Audit Setting')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('System')}</a></li>
+    <li class="active">{:lang('Audit Setting')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Setting')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Audit Version Number')}</label>
+                                    <div class="col-sm-2">
+                                         <input type="text" name="version" value="{notempty name="shield.version"}{$shield.version}{/notempty}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Whether Shield')}</label>
+                                    <div class="col-sm-5">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="shield" {notempty name="shield.shield"}{eq name="shield.shield" value="true"}checked{/eq}{/notempty} value="true">{:lang('YES')}
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="shield" {notempty name="shield.shield"}{eq name="shield.shield" value="false"}checked{/eq}{/notempty} value="false">  {:lang('NO')}
+                                        </label>
+                                    </div>
+                                </div>
+                    </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            submitHandler: function(form) {
+                <!-- alert("submitted!");
+                $.ajax({
+                    url:"{:url('admin/system/editShield')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

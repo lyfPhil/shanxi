@@ -1,0 +1,195 @@
+{include file="/common/header" title="<?php echo($title); ?>" /}
+
+<div id="xh_wrapper" >
+
+
+<input type="hidden" id="hdUrlFocus" />
+    <div class="xh_h_show" style="height:500px;">
+        <div class="xh_h_show_in" >
+            <div id="zSlider" >
+                <div id="picshow" >
+                    <div id="picshow_img" >
+                        <ul >
+                            {volist name="recArt" id="v"}
+                            <li style="display: list-item;" >
+                                <a href="{:url('article/index',array('artid'=>$v.id))}" target="_blank">
+                                <img src="{$v.thumb}" alt="{$v.title}" ></a>
+                            </li>
+                            {/volist}
+                        </ul>
+                    </div>
+                </div>
+                <div id="select_btn">
+                    <ul>
+                        <li class="current"></li><li class=""></li><li class=""></li><li class=""></li>
+                    </ul>
+                </div>
+                <div class="focus-bg-title">
+                    <div id="focus-left" class="arrow-left" onmouseover="IFocuse(this,true)" onmouseout="IFocuse(this,false)"></div>
+                    <div id="focus-center" class="focus-title">
+                    <div style="float:left;width:580px;padding-left:10px;font-size:18px;" id="focus-tl-s"></div>
+                    <div style="float:right;width:200px;"></div>
+                    </div>
+                    <div id="focus-right" class="arrow-right"></div>
+                </div>
+            </div>
+            <div id="picshow_right" >
+                <a href="/life/416.html" target="_blank">
+                <img src="__PUBLIC__/static/index/images/1-140206160415Y6.jpg" alt="COACH再度携手王力宏 踩单车演"></a>
+
+                <div id="picshow_right_cover" onclick="goanewurl()" style="cursor:pointer;position:absolute;top:495px;font-size:14px;height:45px;line-height:45px;padding-left:42px;color:#ffffff;zoom:1;background-image:url(__PUBLIC__/static/index/images/focus-left-bg.png); background-repeat:no-repeat; background-color:#01A1ED;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="xh_container">
+        <a name="new"></a>
+        <div id="xh_content" style="padding-right:10px;">
+            <div class="xh_area_h_3">
+                <div class="xh_area_title">
+                    <div style=""><h3>New 最近更新</h3></div>
+                    <span class="r">
+                    {volist name="recIndex" id="v"}
+                    <a href='http://localhost/bike/public/index.php/index/{if condition="$v.type eq 1"}artlist{elseif condition="$v.type eq 2"}page{elseif condition="$v.type eq 3"}imglist{/if}/index/cateid/{$v.id}'>{$v.catename}</a>
+                    {/volist}
+                    </span>
+
+                </div>
+                <br>
+
+                {volist name="newarticle" id="v"}
+                <div class="xh_post_h_3 ofh">
+                    {if condition="$v.thumb neq ''"}
+                    <div class="xh_265x265">
+                        <a target="_blank" href="{:url('article/index',array('artid'=>$v.id))}" title="{v.title}">
+                            <img src="{$v.thumb}" alt="{$v.title}" height="240" width="400">
+                        </a>
+                    </div>
+                    {/if}
+                    <div class="{if condition="$v.thumb neq ''"}r{else}l{/if} ofh">
+                        <h2 class="xh_post_h_3_title ofh">
+                            <a target="_blank" href="{:url('article/index',array('artid'=>$v.id))}" title="{v.title}">{$v.title}</a>
+                        </h2>
+                        <span class="time">{$v.time|date="Y-m-d",###}</span>
+                        <div class="xh_post_h_3_entry ofh">
+                            {$v.desc}
+                        </div>
+                        <div class="b">
+                            <span title="{$v.zan}人赞" class="xh_love">
+                                <span class="textcontainer"><span>{$v.zan}</span></span>
+                                <span class="bartext"></span>
+                            </span>
+                            <span title="{$v.click}" class="xh_views">{$v.click}</span>
+                        </div>
+                    </div>
+                        <span class="cat">{$v.catename}</span>
+                </div>
+                {/volist}
+            </div>
+            <div id="pagination"><div class='wp-pagenavi'> <a href="/lookbike/" style='float:right;'><img src='__PUBLIC__/static/index/images/arrow-1.png' id='next-page'></a></div>
+            </div>
+        </div>
+        <div id="xh_sidebar">
+            <div class="widget" style="margin-top: 30px;">
+                <div style="background: url('__PUBLIC__/static/index/images/hots_bg.png') no-repeat scroll 0 0 transparent;width:250px;height:52px;margin-bottom:15px;">
+                </div>
+                <ul id="ulHot">
+                    {volist name="siteHotArt" id="v"}
+                    <li style="border-bottom:dashed 1px #ccc;height:70px; margin-bottom:15px;">
+                        <div style="float:left;width:85px;height:55px; overflow:hidden;"><a href="{:url('article/index',array('artid'=>$v.id))}" target="_blank"><img src="{$v.thumb}" width="83" title="{$v.title}" /></a>
+                        </div>
+                        <div style="float:right;width:145px;height:52px; overflow:hidden;"><a href="{:url('article/index',array('artid'=>$v.id))}" target="_blank" title="{$v.title}">{$v.title}</a>
+                        </div>
+                    </li>
+                    {/volist}
+                </ul>
+            </div>
+
+            <div class="widget portrait">
+                <div class="textwidget">
+                    <a href="/tougao.html"><img src="__PUBLIC__/static/index/images/tg.jpg" alt="投稿"></a><br><br>
+                </div>
+            </div>
+
+            <div class="widget links">
+                <h3>友情链接</h3>
+                <ul>
+                {volist name='linkres' id="v"}
+                <li><a href="<?php if(strpos($v['url'],'http://')!==0)echo 'http://';?>{$v.url}" target='_blank'>{$v.title}</a> </li>
+                {/volist}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="boxBor" onclick="IBoxBor()" style="cursor:pointer;"></div>
+    <input type="hidden" id="hdBoxbor" />
+    <script type="text/javascript">
+
+        $("#next-page").hover(function () { $(this).attr("src", "__PUBLIC__/static/index/images/next02.png"); }, function () { $(this).attr("src", "__PUBLIC__/static/index/images/next01.png"); });
+        $("#last-page").hover(function () { $(this).attr("src", "__PUBLIC__/static/index/images/last02.png"); }, function () { $(this).attr("src", "__PUBLIC__/static/index/images/last01.png"); });
+
+        $(function () {
+            var imgHoverSetTimeOut = null;
+            $('.xh_265x265 img').hover(function () {
+                var oPosition = $(this).offset();
+                var oThis = $(this);
+                $(".boxBor").css({
+                    left: oPosition.left,
+                    top: oPosition.top,
+                    width: oThis.width(),
+                    height: oThis.height()
+                });
+                $(".boxBor").show();
+                var urlText = $(this).parent().attr("href");
+                $("#hdBoxbor").val(urlText);
+            }, function () {
+                imgHoverSetTimeOut = setTimeout(function () { $(".boxBor").hide(); }, 500);
+            });
+            $(".boxBor").hover(
+                function () {
+                    clearTimeout(imgHoverSetTimeOut);
+                }
+                , function () {
+                    $(".boxBor").hide();
+                }
+            );
+            });
+            function IBoxBor() {
+                window.open($("#hdBoxbor").val());
+            }
+            function goanewurl() {
+                window.open($("#hdUrlFocus").val());
+            }
+    </script>
+
+
+<div class="sitemap">
+    <h4>SITE MAP</h4>
+    <div class="l">
+        {volist name="cateres" id="v"}
+        <ul id="menu-sitemap" class="menu">
+            <li class="menu-item menu-item-type-custom menu-item-object-custom">
+                <a target="_blank" href="http://localhost/bike/public/index.php/index/{if condition="$v.type eq 1"}artlist{elseif condition="$v.type eq 2"}page{elseif condition="$v.type eq 3"}imglist{/if}/index/cateid/{$v.id}">{$v.catename}</a>
+                {if condition="$v.children neq 0"}
+                <ul class="sub-menu">
+                    {volist name="$v.children" id="v1"}
+                    <li class="menu-item menu-item-type-taxonomy menu-item-object-category">
+                        <a target="_blank" href="http://localhost/bike/public/index.php/index/{if condition="$v1.type eq 1"}artlist{elseif condition="$v1.type eq 2"}page{elseif condition="$v1.type eq 3"}imglist{/if}/index/cateid/{$v1.id}">{$v1.catename}</a>
+                    </li>
+                    {/volist}
+                </ul>
+                {/if}
+            </li>
+        </ul>
+        {/volist}
+    </div>
+    <div class="r">
+        <h5>FOLLOW US</h5>
+        <img src="__PUBLIC__/static/index/images/weixin.jpg" alt="" title="扫描添加我们的公众微信" class="alignnone size-full wp-image-18966"
+                            height="140" width="120">
+    </div>
+</div>
+
+
+{include file="/common/footer" /}

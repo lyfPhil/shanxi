@@ -1,0 +1,273 @@
+{extend name="travel/base" /}
+{block name="js"}
+<script type="text/javascript">
+	$(function(){
+		SyntaxHighlighter.all();
+		});
+		$(window).load(function(){
+		$('.flexslider').flexslider({
+		animation: "slide",
+		start: function(slider){
+		$('body').removeClass('loading');
+		}
+		});
+	});
+</script>
+{/block}
+{block name="banner"}
+	<!-- banner -->
+	<div class="banner holidays-banner">
+		<!-- container -->
+		<div class="container">
+			<div class="col-md-4 banner-left">
+				<section class="slider2">
+					<div class="flexslider">
+						<ul class="slides">
+							<li>
+								<div class="slider-info">
+									<img src="images/5.jpg" alt="">
+								</div>
+							</li>
+							<li>
+								<div class="slider-info">
+									<img src="images/6.jpg" alt="">
+								</div>
+							</li>
+							<li>	
+								<div class="slider-info">
+									<img src="images/7.jpg" alt="">
+								</div>
+							</li>
+							<li>	
+								<div class="slider-info">
+									<img src="images/8.jpg" alt="">
+								</div>
+							</li>
+							<li>	
+								<div class="slider-info">
+									<img src="images/6.jpg" alt="">
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<!--FlexSlider-->
+			</div>
+			<div class="col-md-8 banner-right">
+				<div class="sap_tabs">	
+					<div class="booking-info about-booking-info">
+						<h2>Book Domestic & International Holiday packages</h2>
+					</div>
+					<div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">	
+						  <!---->		  	 
+									<div class="facts about-facts train-facts">
+										<div class="booking-form train-form">
+										<link rel="stylesheet" href="css/jquery-ui.css" />
+											<!---strat-date-piker---->
+											<script>
+												$(function() {
+													$( "#datepicker,#datepicker1" ).datepicker();
+												});
+											</script>
+											<!---/End-date-piker---->
+											<!-- Set here the key for your domain in order to hide the watermark on the web server -->
+											
+											<div class="online_reservation">
+													<div class="b_room">
+														<div class="booking_room">
+															<div class="reservation">
+																<ul>		
+																	<li  class="span1_of_1 desti about-desti">
+																		 <h5>Destination</h5>
+																		 <div class="book_date">
+																			 <form>
+																				<span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+																				<input type="text" placeholder="City, Area or Hotel Name" class="typeahead1 input-md form-control tt-input" required="">
+																			 </form>
+																		 </div>					
+																	 </li>
+																</ul>
+															</div>
+															<div class="reservation">
+																<ul>	
+																	 <li  class="span1_of_1">
+																		 <h5>From</h5>
+																		 <div class="book_date">
+																		 <form>
+																			<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+																			<input type="date" value="Select date" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Select date';}">
+																		</form>
+																		 </div>		
+																	 </li>
+																	 <li  class="span1_of_1 left">
+																		 <h5>To</h5>
+																		 <div class="book_date">
+																			 <form>
+																				<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+																				<input type="date" value="Select date" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Select date';}">
+																			</form>
+																		 </div>					
+																	 </li>
+																	 <div class="clearfix"></div>
+																</ul>
+															</div>
+															<div class="reservation">
+																<ul>	
+																	 <li class="span1_of_3">
+																			<div class="date_btn">
+																				<form>
+																					<input type="submit" value="Search" />
+																				</form>
+																			</div>
+																	 </li>
+																	 <div class="clearfix"></div>
+																</ul>
+															</div>
+														</div>
+														<div class="clearfix"></div>
+													</div>
+											</div>
+											<!---->
+										</div>	
+									</div>
+					</div>	
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //banner -->
+	<div class="move-text">
+		<div class="marquee">Register your hotel with us free of cost.<a href="signup.html">Here</a></div>
+		<script type="text/javascript" src="js/jquery.marquee.min.js"></script>
+        <script>
+		  $('.marquee').marquee({ pauseOnHover: true });
+		  //@ sourceURL=pen.js
+		</script>
+	</div>
+{/block}
+{block name="content"}
+	<!-- banner-bottom -->
+	<div class="banner-bottom">
+		<!-- container -->
+		<div class="container">
+			<div class="banner-bottom-info">
+				<h3>Today's Top Deals</h3>
+			</div>
+			<div class="banner-bottom-grids">
+				<div class="col-md-4 banner-bottom-grid">
+					<div class="banner-bottom-right">
+						<a href="products.html">
+							<img src="images/a3.jpg" alt="" />
+							<div class="destinations-grid-info tours">
+									<h5>New Hotel Experiences at Your Favourite Destinations</h5>
+									<p>Integer eget aliquam nibh. Donec blandit volutpat libero id lacinia</p>
+									<p class="b-period">Book Period: Now - 7 September 2015 | Travel Period: Now - 31 October 2015 </p>
+							</div>
+						</a>
+					</div>
+					<div class="top-destinations-grids">
+						<div class="top-destinations-info">
+							<h4>Top Destinations</h4>
+						</div>
+						<div class="top-destinations-bottom">
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t1.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$190</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t2.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$213</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t3.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$176</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							<div class="td-grids">
+								<div class="col-xs-3 td-left">
+									<img src="images/t4.jpg" alt="">
+								</div>
+								<div class="col-xs-7 td-middle">
+									<a href="single.html">Donec libero id lacinia</a>
+									<p>Dapibus eu purus vel libero in nunc</p>
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span> <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</div>
+								<div class="col-xs-2 td-right">
+									<p>$490</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8 banner-bottom-grid holidays-bottom-grid">
+					<div class="holidays-grids">
+						<div class="holidays-info">
+							<h4>Explore Destinations</h4>
+						</div>
+						<div class="holidays-grid">
+							<a href="products.html"><img src="images/h5.jpg" alt="" /></a>
+						</div>
+					</div>
+					<div class="holidays-top-grids">
+						<div class="col-md-6 holidays-top-grid">
+							<a href="products.html"><img src="images/h2.jpg" alt="" /></a>
+						</div>
+						<div class="col-md-6 holidays-top-grid">
+							<a href="products.html"><img src="images/a4.jpg" alt="" /></a>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+					<div class="holidays-top-grids">
+						<div class="col-md-6 holidays-top-grid">
+							<a href="products.html"><img src="images/a2.jpg" alt="" /></a>
+						</div>
+						<div class="col-md-6 holidays-top-grid">
+							<a href="products.html"><img src="images/h1.jpg" alt="" /></a>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+					<div class="holidays-grid">
+						<a href="products.html"><img src="images/h5.jpg" alt="" /></a>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //banner-bottom -->
+{/block}
+	
+	

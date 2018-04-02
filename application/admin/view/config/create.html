@@ -1,0 +1,143 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Create the Configuration Item')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('System')}</a></li>
+    <li class="active">{:lang('Create the Configuration Item')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Basic Information')}</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Logo')}</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="key" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Name')}</label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="name" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('The Data Type')}</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-control" name="type">
+                                            <option value="1">{:lang('String')}</option>
+                                            <option value="2">json</option>
+                                            <option value="3">{:lang('Digital')}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Configuration Type')}</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-control" name="state">
+                                            <option value="0">{:lang('Other')}</option>
+                                            <option value="1">{:lang('The System Configuration')}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Configuration Values')}</label>
+                                    <div class="col-sm-5">
+                                        <textarea class="form-control" name="value"></textarea>
+                                    </div>
+                                </div>
+                                 <div class="form-group">
+                                    <label class="col-sm-2 control-label">{:lang('Remarks')}</label>
+                                    <div class="col-sm-5">
+                                        <textarea class="form-control" name="remark"></textarea>
+                                    </div>
+                                </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                key: {
+                    required: true,
+                    maxlength: 150
+                },
+                name: {
+                    required: true,
+                    maxlength: 150
+                }
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!");
+                $.ajax({
+                    url:"{:Url('admin/config/store')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

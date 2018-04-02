@@ -1,0 +1,127 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Page Content -->
+<div class="page-content">
+    <!-- Page Breadcrumb -->
+    <div class="page-breadcrumbs">
+        <ul class="breadcrumb">
+            <li><a href="{:url('admin/index/index')}">后台首页</a></li>
+            <li><a href="{:url('admin/cate/cate_type')}">栏目类型列表</a></li>
+            <li>编辑栏目类型</li>
+        </ul>
+    </div>
+    <!-- /Page Breadcrumb -->
+
+    <!-- Page Body -->
+    <div class="page-body">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget">
+                    <div class="widget-body">
+                        <div id="horizontal-form">
+                            <form class="form-horizontal" role="form" action="" method="post">
+                            <input type="hidden" name="id" value="{$cateTypeData.id}">
+
+                                <div class="form-group">
+                                    <label for="username" class="col-sm-2 control-label no-padding-right" >栏目类型ID</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control"  placeholder="" value="{$cateTypeData.type_id}" name="type_id" type="text" required="">
+                                    </div>
+                                    <p class="help-block col-sm-4 red">* 必填</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="username" class="col-sm-2 control-label no-padding-right" >栏目类型名称</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" value="{$cateTypeData.type_name}" placeholder="" name="type_name" type="text" required="">
+                                    </div>
+                                    <p class="help-block col-sm-4 red">* 必填</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="username" class="col-sm-2 control-label no-padding-right">是否启用</label>
+                                    <div class="col-sm-6">
+                                        <label class="radio" style="float:left; margin-right:10px;" style="margin-right:15px;">
+                                            <input {if condition="$cateTypeData.status eq 1"}checked="checked"{/if} name="status" value="1" type="radio">
+                                            <span class="text">是</span>
+                                        </label>
+                                        <label class="radio" style="float:left; margin-right:10px;" style="margin-right:15px;">
+                                            <input {if condition="$cateTypeData.status eq 0"}checked="checked"{/if} class="inverted" name="status" value="0" type="radio">
+                                            <span class="text">否</span>
+                                        </label>
+                                    </div>
+                                    <p class="help-block col-sm-4 red">* 必填</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-default">保存信息</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</div>
+<!-- /Page Body -->
+</div>
+<!-- /Page Content -->
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 32
+                },
+                alias: {
+                    required: true,
+                    maxlength: 32
+                }
+            },
+            submitHandler: function(form) {
+                $.ajax({
+                    url:"{:Url('admin/cate/update')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

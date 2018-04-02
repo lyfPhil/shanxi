@@ -1,0 +1,125 @@
+{include file="common/header" title="搜索-<?php echo($keywords); ?>-的结果" }
+
+<div id="wrapper">
+    <div id="xh_container">
+        <div id="xh_content" style="min-height: 555px;">
+            <div class="path">
+                <h3>搜索<font color="red" style="margin:0 5px;">{$keywords}</font>的结果：</h3>
+            </div>
+            <div class="xh_area_h_3" style="margin-top: 40px;">
+            {if condition="$keywords neq '' "}
+                {volist name="artRes" id="v"}
+                <div class="xh_post_h_3 ofh">
+                    {if condition="$v.thumb neq '' "}
+                    <div class="xh">
+                        <a target="_blank" href="{:url('article/index',array('artid'=>$v.id))}">
+                            <img src="{$v.thumb}" alt="Alain Massabova: 40 Years in Paris BMX 视频" height="240" width="400"></a>
+                    </div>
+                    {/if}
+                    <div class="{if condition="$v.thumb neq '' "}r{/if} ofh">
+                        <h2 class="xh_post_h_3_title ofh" style="height:60px;">
+                            <a target="_blank" href="{:url('article/index',array('artid'=>$v.id))}">{$v.title}</a>
+                        </h2>
+                        <span class="time">{$v.time|date="Y-m-d",###}</span>
+                        <div class="xh_post_h_3_entry ofh" style="color:#555;height:80px; overflow:hidden;">
+                            {$v.desc}
+                        </div>
+                        <div {if condition="$v.thumb neq '' "}class="b"{/if}>
+                            <a href="{:url('article/index',array('artid'=>$v.id))}" class="xh_readmore" rel="nofollow">查看更多</a>
+                            <span class="xh_love">
+                                <span class="textcontainer">
+                                    <span>{$v.zan}</span>
+                                </span>
+                            </span>
+                            <span title="88人浏览" class="xh_views">
+                                {$v.click}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+
+                <div id="pagination">
+                    <div class="wp-pagenavi">
+                    {$artRes->render()}
+                    </div>
+                </div>
+            {elseif $keywords eq ''}
+            <font color="red">您没有输入任何关键词！</font>
+
+            {/if}
+            </div>
+        </div>
+
+        <div id="xh_sidebar">
+        <!-- 右侧 -->
+            <div class="widget">
+
+                <div style="background: url('__PUBLIC__/static/index/images/hots_bg.png') no-repeat scroll 0 0 transparent;width:250px;height:52px;margin-bottom:15px;">
+                </div>
+                {volist name="hotRes" id="v"}
+                <ul id="ulHot">
+                    <li style="border-bottom:dashed 1px #ccc;height:70px; margin-bottom:15px;">
+                        <div style="float:left;width:85px;height:55px; overflow:hidden;">
+                            <a href="{:url('article/index',array('artid'=>$v.id))}" target="_blank"><img src="{$v.thumb}" width="83" title="{$v.title}" /></a>
+                        </div>
+                        <div style="float:right;width:145px;height:52px; overflow:hidden;">
+                            <a href="{:url('article/index',array('artid'=>$v.id))}" target="_blank" title="{$v.title}">{$v.title}</a>
+                        </div>
+                    </li>
+                </ul>
+                {/volist}
+            </div>
+           <!--  -->
+            <div class="widget portrait">
+                <div class="textwidget">
+                    <a href="/tougao.html"><img src="__PUBLIC__/static/index/images/tg.jpg" alt="鎶曠ǹ"></a><br><br>
+                    <script type="text/javascript">BAIDU_CLB_fillSlot("870073");</script>
+                    <script type="text/javascript">BAIDU_CLB_fillSlot("870080");</script>
+                    <script type="text/javascript">BAIDU_CLB_fillSlot("870081");</script>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="boxBor"></div>
+
+    <div class="boxBor" onclick="IBoxBor()" style="cursor:pointer;"></div>
+    <script type="text/javascript">
+        $(function () {
+            var imgHoverSetTimeOut = null;
+            $('.xh_265x265 img').hover(function () {
+                var oPosition = $(this).offset();
+                var oThis = $(this);
+                $(".boxBor").css({
+                    left: oPosition.left,
+                    top: oPosition.top,
+                    width: oThis.width(),
+                    height: oThis.height()
+                });
+                $(".boxBor").show();
+                var urlText = $(this).parent().attr("href");
+                $("#hdBoxbor").val(urlText);
+            }, function () {
+                imgHoverSetTimeOut = setTimeout(function () { $(".boxBor").hide(); }, 500);
+            });
+            $(".boxBor").hover(
+                function () {
+                    clearTimeout(imgHoverSetTimeOut);
+                }
+                , function () {
+                    $(".boxBor").hide();
+                }
+            );
+        });
+        function IBoxBor() {
+            window.open($("#hdBoxbor").val());
+        }
+        function goanewurl() {
+            window.open($("#hdUrlFocus").val());
+        }
+</script>
+
+</div>
+
+{include file="common/footer" /}

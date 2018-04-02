@@ -1,0 +1,297 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="{:url('admin/index/index')}">后台首页</a></li>
+        <li><a >文章管理</a></li>
+        <li>文章列表</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+    <!-- Main content -->
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <div class="row">
+                <a href="{:Url('admin/article/create')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i>创建文章</a>    
+                <div class="pull-left">
+                    <div class="col-sm-6">
+                        <form method="post" class="form-inline">
+                            <input type="hidden" name="thumb">
+                            <div class="input-group">
+                                <div>
+                                    <select id="type" class="form-control">
+                                        <option value="recommend">推荐</option>
+                                        <option value="cancelrecommend">取消推荐</option>
+                                        <option value="change">上线</option>
+                                        <option value="offline">下线</option>
+                                        <option value="delete">删除</option>
+                                    </select>
+                                </div>
+                                <span class="input-group-btn"> 
+                                    <button type="button" onclick="apply()" class="btn btn-primary btn-flat"><i class="fa fa-save"></i>应用</button> 
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <form method="get" class="form-inline">
+                <div class="row">
+                    <span class="input-group">创建时间 :</span>
+                    <div class="input-group" style="width: 19%">
+                        <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="起始时间">
+                    </div>-
+                    <div class="input-group" style="width: 19%">
+                        <input type="" name="end_time" value="{$search.end_time|default=''}" class="form_datetime form-control" placeholder="结束时间">
+                    </div>
+                    <div class="input-group" style="width: 20%">
+                        <span style="width: 20%">所属栏目 :</span>
+                        <div class="input-group" style="width:30%">
+                            <select name="cateid">
+                                <option value=''>全部</option>
+                                {volist name="cate" id="v"}
+                                <option value="{$v.id}" {notempty name="search.cateid"}{eq name="search.cateid" value="$v.id"}selected{/eq}{/notempty}>
+                                    {if condition="$v['level'] neq 0"}|{/if}<?php echo str_repeat('-', $v['level']*4)?>{$v.catename}
+                                </option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <select class="form-control" name="rec">
+                            <option value=''>状态</option>
+                            <option {notempty name="search.rec"}{eq name="search.rec" value="1"}selected{/eq}{/notempty} value="1">推荐</option>
+                            <option {notempty name="search.rec"}{eq name="search.rec" value="0"}selected{/eq}{/notempty} value="0">不推荐</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="title" value="{$search.title|default=""}" class="form-control" placeholder="文章标题">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default btn-flat">搜索</button>
+                         </span>
+                    </div>
+                    <div class="pull-right">
+                        <a class="btn btn-default btn-flat" href="{:Url('admin/article/show')}">重置搜索</a>
+                    </div>
+                </div>
+                    
+            </form>
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;"><input id="checkAll" type="checkbox"></th>
+                                <th class="text-center" width="5%">ID</th>
+                                <th class="text-center" width="25%">文章标题</th>
+                                <th class="text-center" width="10%">缩略图</th>
+                                <th class="text-center" width="10%">作者</th>
+                                <th class="text-center" width="15%">所属栏目</th>
+                                <th class="text-center" width="8%">所属城市</th>
+                                <th class="text-center" width="8%">推荐状态</th>
+                                <th class="text-center" width="8%">发布状态</th>
+                                <th class="text-center" width="10%">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach name="list" item="v"}
+                            <tr id = "t_{$v.id}">
+                                <td><input name="ids[]" value="{$v.id}" type="checkbox"></td>
+                                <td align="center">{$v.id}</td>
+                                <td align="center">
+                                <?php
+                                    echo mb_substr($v['title'],0,20,'utf-8');
+                                    if(strlen($v['title'])>20){echo '......';}
+                                ?>
+                                </td>
+                                <td align="center">
+                                    {if condition="$v['thumb'] neq ''"}
+                                       <img src="{$v.thumb}" height="30">
+                                    {else /}
+                                       暂无缩略图
+                                    {/if}
+                                </td>
+                                <td align="center">{$v.author}</td>
+                                <td align="center">{$v.catename}</td>
+                                <td align="center">{$v.name}</td>
+                                <td align="center">
+                                    {if condition = "$v.rec eq 0"}
+                                    <small class="label bg-red"><i class="glyphicon glyphicon-remove"></i></small>
+                                    {elseif condition = "$v.rec eq 1 "}
+                                    <small class="label bg-green"><i class="glyphicon glyphicon-ok"></i></small>
+                                    {/if}
+                                </td>
+                                <td align="center">
+                                    {if condition = "$v.status eq 0 "}
+                                    <small class="label bg-red"><i class="glyphicon glyphicon-remove"></i></small>
+                                    {elseif condition = "$v.status eq 1 "}
+                                    <small class="label bg-green"><i class="glyphicon glyphicon-ok"></i></small>
+                                    {/if}
+                                </td>
+                                <td align="center">
+                                    <div class="btn-group">
+                                        <a href="{:url('admin/article/edit',['id'=>$v.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                                        <a onClick="deleteOne({$v.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                    
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                <div class="col-sm-6"></div>
+                <div class="col-sm-6">
+                    <div class="pull-left">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        <div>
+    </div>
+</div>
+
+
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'zh-CN',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期时间选择器所能够提供的最精确的时间视图
+ }); 
+</script>
+
+<script>
+    function deleteOne(id){
+            swal({
+                title: "确定删除这条信息吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/article/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("操作已取消", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么返回的是布尔
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[]; 
+        $('input[name="ids[]"]:checked').each(function(){ 
+            chk_value.push($(this).val()); 
+        }); 
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "未选择任何记录!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "确定要进行操作吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/article/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "确定",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("操作已取消", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+
+{/block}

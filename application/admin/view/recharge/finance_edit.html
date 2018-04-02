@@ -1,0 +1,220 @@
+{extend name="public/base" /}
+{block name="style"}
+    <style>
+        label {width:84px;  margin-bottom: 20px;}
+    </style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Prepaid phone details')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home page')}</a></li>
+    <li><a href="#">{:lang('financial')}</a></li>
+    <li class="active">{:lang('Prepaid phone details')}</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Prepaid phone details')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                         <ul class="list-unstyled">
+                            <li>
+                                <label style="width: 15%">{:lang('Recharge number:')}</label>{$detail.charge_no}</li>
+                            <li>
+                                <label style="width: 15%">{:lang('Username')}:</label>{$detail.user_name}</li>
+                            <li>
+                                <label style="width: 15%">{:lang('Recharge amount:')}</label>THB {$detail.cash}</li>
+                            <li>
+                                <label style="width: 15%">{:lang('Recharge method:')}</label><span>{$detail.pay_type}</span>
+                            </li>
+                            {if condition ="$detail.pay_type_no eq 0"}
+                                <li>
+                                    <label style="width: 15%">{:lang('The remitter:')}</label>{$detail.real_name}
+                                </li>
+                                <li>
+                                    <label style="width: 15%">{:lang('Remittance bank:')}</label><span>{$detail.bank_name}</span>
+                                </li>
+                                <li>
+                                    <label style="width: 15%">{:lang('Remittance account:')}</label><span>{$detail.bank_card}</span>
+                                </li>
+                            {/if}
+                            <li>
+                                <label style="width: 15%">{:lang('Payee:')}</label>{$detail.receive.receiver}
+                            </li>
+                            <li>
+                                <label style="width: 15%">{:lang('Beneficiary bank:')}</label>{$detail.receive.bank_name}
+                            </li>
+                            <li>
+                                <label style="width: 15%">{:lang('Account number:')}</label>{$detail.receive.bank_card}
+                            </li>
+                            <li>
+                                <label style="width: 15%">{:lang('Create time:')}</label><span>{$detail.create_time}</span>
+                            </li>
+                            <!--<li>
+                                <label style="width: 15%">{:lang('Expiration date:')}</label><span>{$detail.over_time}</span>
+                            </li>-->
+                            <li>
+                                <label style="width: 15%">{:lang('Recharge status:')}</label>
+                                <span>
+                                    {switch $detail.state}
+                                        {case value="0"}{:lang('Untreated')}{/case}
+                                        {case value="1"}{:lang('Success')}{/case}
+                                        {case value="2"}{:lang('Cancelled')}{/case}
+                                        {case value="3"}{:lang('Treasurer Audited')}{/case}
+                                    {/switch}
+                                </span>
+                            </li>
+                            {notempty name="detail.invoice"}
+                            <li><label style="width: 15%">{:lang('Recharge certificate:')}</label></li>
+                            <li><label style="width: 15%"><span><img src="{$detail.invoice}" style="width:200px;height: 100px;" onclick='window.open($(this).attr("src"))'/></span></label></li>
+                            {/notempty}
+                            {if condition = "($detail.state eq '3') or ($detail.state eq '1')"}
+                                <li>
+                                    <label style="width: 15%">{:lang('Remittance flow:')}</label>
+                                    <span>{$detail.pay_info}</span>
+                                </li>
+                                <li>
+                                    <label style="width: 15%">{:lang('Remittance time:')}</label>
+                                    <span>{$detail.pay_time}</span>
+                                </li>
+                            {/if}
+                            {if condition = "$detail.state eq '2'"}
+                                <li>
+                                    <label style="width: 15%">{:lang('Reasons for cancellation:')}</label><span>{$detail.cancel}</span>
+                                </li>
+                            {/if}
+                            {if condition = "$detail.state eq '0'" }
+                                <li>
+                                    <label style="width: 15%"><font color="red">{:lang('Operation:')}</font></label>
+                                    <span>
+                                        <input type="radio" name="state" {eq name="detail.state" value="3"}checked{/eq} value="3">{:lang('Confirm')} {:lang('Recharge')}
+                                    </span>
+                                    <span>
+                                        <input type="radio" name="state" {eq name="detail.state" value="2"}checked{/eq} value="2">{:lang('Refuse to Apply')}
+                                    </span>
+                                </li>
+                                <li id="confirm" style="display: none">
+                                    <label style="width: 15%">{:lang('Remittance flow:')}</label>
+                                    <span><input type="text" name="pay_info" style="width: 200px"></span>
+                                    </br>
+                                    <label style="width: 15%">{:lang('Time:')}</label>
+                                    <span><input type="text" name="pay_time" style="width: 200px"></span>
+                                </li>
+                                <li id="delay" style="display: none">
+                                    <label style="width: 15%">{:lang('Reject application:')}</label>
+                                    <span>
+                                        <select name="delay_reason">
+                                            <option value="1">{:lang('30 days did not receive the money')}</option>
+                                            <option value="2">{:lang('Unable to reach users')}</option>
+                                            <option value="3">{:lang('The amount to the account is inconsistent with the recharge amount.')}</option>
+                                            <option value="4">{:lang('Other reasons')}</option>
+                                        </select>
+                                    </span>
+                                </li>
+                            {/if}
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <input type="hidden" name="charge_no" value="{$detail.charge_no}">
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                        {if condition ="$detail.state eq '0'"}
+                            <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                        {/if}
+                    </div>
+                </div>
+              </div>
+            </form>
+    </div>
+
+</section>
+{/block}
+<!-- /.content -->
+{block name="js"}
+<script>
+    $(function(){
+        $(":radio").click(function(){
+            //alert($(this).val());
+            var check = $(this).val();
+            if(check == '3'){
+                $("#delay").css({"display":"none"});
+                $("#confirm").css({"display":""});
+            }
+            if(check == '2'){
+                $("#confirm").css({"display":"none"});
+                $("#delay").css({"display":""});
+            }
+        });
+
+    })
+</script>
+<script>
+    $(function(){
+        $("#form").validate({
+        rules: {
+            pay_info:{
+                required:true
+            }
+
+        },
+        submitHandler: function(form) {
+            $("#submit").attr({"disabled":"disabled"});
+            swal({
+            title: "{:lang('Determine Submit')}",
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "{:lang('Determine')}",
+            cancelButtonText: "{:lang('Cancel')}",
+            closeOnConfirm: false,
+            closeOnCancel: false },
+        function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                url:"{:Url('admin/recharge/update')}",
+                data:$(form).serialize(),
+                type:'post',
+                dataType:'json',
+                success: function(xhr){
+                    if(xhr.code == 200){
+                        swal({
+                            title:xhr.msg,
+                            text:"",
+                            type:'success',
+                        },function(isConfirm){
+                            window.location.reload();
+                        })
+                    }else{
+                        swal(xhr.msg, "", "error");
+                    }
+                }
+                })
+            } else {
+                swal("{:lang('Cancel Operation')}", "", "error");
+            }
+        });
+        }
+    });
+    });
+</script>
+<script>
+    $(function(){
+      //按钮
+        var state = '{$detail.state}';
+        if(state == 1 || state==2 || state==3)){
+            $("#submit").attr({"disabled":"disabled"});
+        }
+    }
+</script>
+{/block}

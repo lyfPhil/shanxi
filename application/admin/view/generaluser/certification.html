@@ -1,0 +1,149 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>用户</a></li>
+        <li><a>前端用户</a></li>
+        <li><a>身份认证</a></li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+<!-- Page Body -->
+<div class="page-body">
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <form method="get" class="form-inline">
+                <div class="row">
+                    <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                        <span class="input-group">会员ID：</span>
+                        <div class="input-group col-lg-9">
+                            <input type="text" name="vid" value="{$search.vid|default=""}" class="form-control" placeholder="请输入会员ID">
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                        <span class="input-group">账号：</span>
+                        <div class="input-group col-lg-9">
+                            <input type="text" name="account" value="{$search.account|default=""}" class="form-control" placeholder="请输入用户账号">
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                        <span class="input-group">真实姓名：</span>
+                        <div class="input-group col-lg-9">
+                            <input type="text" name="real_name" value="{$search.real_name|default=""}" class="form-control" placeholder="请输入真实姓名">
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="form-group col-lg-6 col-md-5 col-sm-12">
+                        <span class="input-group">选择时间：</span>
+                        <div class="input-group col-lg-5">
+                            <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="开始时间">
+                        </div>
+                        -
+                        <div class="input-group col-lg-5">
+                            <input type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="结束时间">
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3 col-md-5 col-sm-12">
+                        <span class="input-group">审核状态：</span>
+                        <div class="input-group col-lg-6">
+                            <select class="form-control" name='status'>
+                                <option value=''>请选择</option>
+                                <option value="0"{notempty name="search.status"}{eq name="search.status" value="0"}selected{/eq}{/notempty}>审核中</option>
+                                <option value='1' {notempty name="search.status"}{eq name="search.status" value="1"}selected{/eq}{/notempty}>审核通过</option>
+                                <option value='2' {notempty name="search.status"}{eq name="search.status" value="2"}selected{/eq}{/notempty}>审核不通过</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group col-lg-1">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">搜索</button>
+                      </span>
+                    </div>
+                    <div class="input-group btn-group col-lg-1">
+                        <a class="btn btn-default btn-flat" href="{:Url('admin/Generaluser/certification')}">重置搜索</a>
+                    </div>
+                </div>
+            </form>
+            <!-- </div> -->
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                <table class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center">会员ID</th>
+                            <th class="text-center">账号</th>
+                            <th class="text-center">真实姓名</th>
+                            <th class="text-center">提交时间</th>
+                            <th class="text-center">审核状态</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.vid}</td>
+                        <td>{$vo.account}</td>
+                        <td>{$vo.real_name}</td>
+                        <td>{$vo.create_time|date = "Y-m-d H:i:s",###}</td>
+                        <td>
+                            {if condition = "$vo.status eq '0'"}
+                            审核中
+                            {elseif condition = "$vo.status eq '1'"}
+                            审核通过
+                            {else condition = "$vo.status eq '2'"}
+                            审核不通过
+                            {/if}
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/generaluser/checkCertification',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'zh-CN',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期{:lang('Time')}{:lang('Choose')}器所能够提供的最精确的{:lang('Time')}{:lang('Choose')}视图
+ });
+</script>
+{/block}

@@ -1,0 +1,274 @@
+{extend name="public/base" /}
+
+{block name="content"}
+
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="{:url('admin/index/index')}">后台首页</a></li>
+        <li><a href="{:url('show')}">文章列表</a></li>
+        <li>修改文章</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 col-xs-12">
+            <div class="widget">
+                <div class="widget-header bordered-bottom bordered-blue">
+                    <span class="widget-caption">修改文章</span>
+                </div>
+                <div class="widget-body">
+                    <div id="horizontal-form">
+                        <form method="post" id="form" action="" class="form-horizontal">
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">标题</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control"  placeholder=""  value="{$arts.title}" name="title" required="" type="text">
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">作者</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control"  placeholder=""  value="{$arts.author}" name="author" type="text" required="">
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">关键词</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control"  placeholder="" name="keywords"  value="{$arts.keywords}" type="text" required="">
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">描述</label>
+                                <div class="col-sm-6">
+                                    <textarea name="desc" class="form-control" required="">{$arts.desc}</textarea>
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">缩略图</label>
+                                <div class="col-sm-6">
+                                    <input style="float:left;"  placeholder="" name="thumb" type="file">
+                                    {if condition="$arts['thumb'] neq ''"}
+                                    <img style="float:left;" src="{$arts.thumb}" width="30">
+                                    {else /}
+                                    暂无缩略图
+                                    {/if}
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">是否推荐</label>
+                                <div class="col-sm-6">
+                                    <label style="margin-right:15px;">
+                                        <input {if condition="$arts['rec'] eq 1"} checked="checked" {/if} name="rec" value="1" type="radio">
+                                        是
+                                    </label>
+                                    <label style="margin-right:15px;">
+                                        <input {if condition="$arts['rec'] eq 0"} checked="checked" {/if} class="inverted" name="rec" value="0" type="radio">
+                                        否
+                                    </label>
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">是否上架</label>
+                                <div class="col-sm-6">
+                                    <label style="margin-right:15px;">
+                                        <input {if condition="$arts['status'] eq 1"} checked="checked" {/if} name="status" value="1" type="radio">
+                                        是
+                                    </label>
+                                    <label style="margin-right:15px;">
+                                        <input {if condition="$arts['status'] eq 0"} checked="checked" {/if} class="inverted" name="status" value="0" type="radio">
+                                        否
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">所属栏目</label>
+                                <div class="col-sm-6">
+                                    <select name="cateid">
+                                        {volist name="cateres" id="cate"}
+                                        <option {if condition="$cate['id'] eq $arts['cateid']"}selected="selected"{/if} value="{$cate.id}">{if condition="$cate['level'] neq 0"}|{/if}<?php echo str_repeat('-', $cate['level']*4)?>{$cate.catename}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">所属城市</label>
+                                <div class="col-sm-6">
+                                    <select name="city_id">
+                                        {volist name="cityinfo" id="v"}
+                                        <option {if condition="$v['id'] eq $arts['city_id']"}selected="selected"{/if} value="{$v.id}">{$v.name}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group" >
+                                <label for="username"  required="" class="col-sm-2 control-label no-padding-right">内容</label>
+                                <div class="col-sm-8">
+                                    <textarea id="content" name="content">{$arts.content}</textarea>
+                                </div>
+                                <p class="help-block col-sm-2 red">* 必填</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                <div class="box-footer">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <div class="btn-group">
+                                            <input type="hidden" name="id" value="{$arts.id}">
+                                            <button class="btn btn-default btn-flat" type="reset">取消</button>
+                                            <button class="btn btn-primary btn-flat" id="submit" type="submit">保存</button>
+                                        </div>
+                                        <div class="btn-group ">
+                                            <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返 回</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById("content").value="{$arts.content}";
+    </script>
+</div>
+<!-- /Page Body -->
+
+{/block}
+
+{block name="js"}
+<!--./{:lang('Upload Pictures')}-->
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/fileinput/css/fileinput.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-select.min.css">
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/canvas-to-blob.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/sortable.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/plugins/purify.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/fileinput.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/fileinput/js/locales/zh.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+// with plugin options
+$("#files").fileinput({
+    'showUpload':true, 
+    'previewFileType':'any',
+    'maxFileCount': 1,
+    'language':'zh',
+    'enctype':'multipart/form-data',
+    'allowedFileTypes':['image'] ,//['image', 'html', 'text', 'video', 'audio', 'flash', 'object']
+    'allowedFileExtensions':['jpg', 'gif', 'png'],
+    'uploadUrl':"{:url('admin/ueditor/uploadImage')}",
+    'showUploadedThumbs':true,
+    // for image files
+    'initialPreview' : [
+        {notempty name="article.image"}
+        '<img src="{$article.image}" style="width:auto;height:160px;" class="file-preview-image">',
+        {/notempty}
+    ],
+    // for image config
+    'initialPreviewConfig' : [
+        {notempty name="article.image"}
+        {
+            caption: '{:lang('Picture')}', 
+            width: '120px', 
+            url: "{:url('admin/blog/removeImage')}", // server delete action 
+            key: "{$article.image}",
+            extra: {id: {$article.id}, model: 'article'}
+            //可以配置更多
+        },
+        {/notempty}
+    ],
+});
+
+$("#files").on("fileuploaded", function (event, data, previewId, index) {
+    var obj = data.response;
+    var fileName = '<input type="hidden" name="image" value="'+ obj.data.saveName +'" >';
+    $("#img").html(fileName);
+});
+
+$('#files').on('filesuccessremove', function(event, id) {
+    // console.log('Uploaded thumbnail successfully removed');
+    $("#img").empty();
+});
+</script>
+
+<script type="text/javascript">
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 150
+                },
+                count: {
+                    number: true,
+                },
+                content: {
+                    required: true,
+                },
+            },
+            submitHandler: function(form) {
+                $.ajax({
+                    url:"{:url('admin/article/update')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+<script>  
+    $(function() {  
+        $('.selectpicker').selectpicker({  
+            size: 10,
+            style: 'default'
+
+        });  
+        $('.selectpicker').selectpicker('refresh');
+    });  
+</script>  
+{/block}

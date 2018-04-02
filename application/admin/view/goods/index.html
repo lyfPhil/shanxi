@@ -1,0 +1,315 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+    th{
+        text-align: center;
+    }
+</style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>商品</a></li>
+        <li>商品列表</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <form method="get" class="form-inline" role="form">
+                <div class="row">
+                    <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                        <label>商品标题  :</label>
+                        <input class="form-control input-group" style="width: 65%;" type="text" name="title" value="{$search.title|default=""}" class="form-control" placeholder="请输入商品标题">
+                    </div>
+                    <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                        <label>商品名称 :</label>
+                        <input class="form-control input-group" style="width: 65%;"type="text" name="game_name" value="{$search.game_name|default=""}" placeholder="请输入商品名称">
+                    </div>
+                    <div class="form-group col-lg-4 col-md-2 col-sm-12">
+                        <label>交易类型 :</label>
+                        <select class="form-control input-group" style="width:40%;" name="deliver_id">
+                            <option value="">全部</option>
+                            {volist name="deliver_type" id="vo" key="key"}
+                            <option value="{$key-1}"{notempty name="search.deliver_id"}{eq name="search.deliver_id" value="$key-1"}selected{/eq}{/notempty}>{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                        <label>卖家账号 :</label>
+                        <input type="text" name="user_name" value="{$search.user_name|default=""}" class="form-control input-group" style="width: 70%;" placeholder="请输入卖家账号">
+                    </div>
+                    <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                        <label>商品类型 :</label>
+                        <select class="form-control input-group" style="width: 65%;" name="goods_type">
+                            <option value="">{:lang('All')}</option>
+                            {volist name="type" id="vo" key="key"}
+                            <option value="{$key-1}"{notempty name="search.goods_type"}{eq name="search.goods_type" value="$key-1"}selected{/eq}{/notempty}>{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-2 col-sm-12">
+                        <label>状态 :</label>
+                        <select class="form-control" style="width: 65%;" name="state">
+                            <option value="">选择状态</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="3"}selected{/eq}{/notempty} value="3">下架</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="2"}selected{/eq}{/notempty} value="2">审核失败</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="1"}selected{/eq}{/notempty} value="1">上架</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="0"}selected{/eq}{/notempty} value="0">待审核</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="form-group col-lg-9 col-md-8 col-sm-6">
+                        <label>发布日期：</label>
+                        <div class="input-group col-lg-4">
+                            <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The Start Time')}">
+                        </div>-
+                        <div class="input-group col-lg-4">
+                            <input type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The End Time')}">
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-1 col-md-2 col-sm-3">
+                        <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">搜索</button>
+                      </span>
+                    </div>
+                    <div class="form-group col-lg-1 col-md-2 col-sm-3">
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-flat" href="{:Url('admin/goods/index')}">重置搜索</a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget widget-body flip-scroll">
+                <table class="table table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>商品ID</th>
+                            <th>商品信息</th>
+                            <th>交易类型</th>
+                            <th>发布者</th>
+                            <th>单价</th>
+                            <th>库存数量</th>
+                            <th>类型</th>
+                            <th>状态</th>
+                            <th>发布日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td>
+                            <a href='{$vo.detail_url}' id="good_title" target="_blank">{$vo.title}</a></br>
+                            商品名称： {$vo.game_name}
+                        </td>
+                        <td>
+                            {if condition = "$vo.deliver_id eq '0'"}
+                            {:lang('Consignment')}
+                            {elseif condition = "$vo.deliver_id eq '1'"}
+                            {:lang('Guarantee')}
+                            {/if}
+                        </td>
+                        <td>{$vo.user_name}</td>
+                        <td>RMB {$vo.price}</td>
+                        <td>{$vo.stock}</td>
+                        <td>{$vo.goods_type_name}</td>
+                        <td>
+                            {if condition = "$vo.state eq '0'"}
+                            待审核
+                            {elseif condition = "$vo.state eq '1'"}
+                            上架
+                            {elseif condition = "$vo.state eq '2'"}
+                            审核失败
+                            {else condition = "$vo.state eq '3'"}
+                            <font color="red">下架</font>
+                            {/if}
+                        </td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/goods/detail',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    <form method="post" class="form-inline">
+                        <div class="input-group">
+                            <div><select id="type" class="form-control">
+                                <option value="check">待审核</option>
+                                <option value="on_offer">上架</option>
+                                <option value="check_false">审核失败</option>
+                                <option value="sold_out">下架</option>
+                            </select>
+                            </div>
+                            <span class="input-group-btn">
+                                <button type="button" onclick="apply()" class="btn btn-primary btn-flat"><i class="fa fa-save"></i>应用</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'zh-CN',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期{:lang('Time')}{:lang('Choose')}器所能够提供的最精确的{:lang('Time')}{:lang('Choose')}视图
+ });
+</script>
+<script>
+    function deleteOne(id){
+            swal({
+                title: "确定要删除这条记录吗？",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/goods/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("操作已取消", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "未选择任何记录!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "确定要执行操作吗？",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/goods/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "确定",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "确定",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("操作已取消", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

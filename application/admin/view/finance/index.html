@@ -1,0 +1,186 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Funds')} {:lang('List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Financial')}</a></li>
+    <li class="active">{:lang('Funds')} {:lang('List')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <div class="btn-group">
+                <a class="btn btn-default btn-flat" href="{:Url('admin/finance/index')}">{:lang('Reset The Search')}</a>
+            </div>
+            <div class="pull-right">
+                <form method="get" class="form-inline">
+                    <!--<span class="input-group">{:lang('Serial Number:')}</span>
+                    <div class="input-group">
+                        <input type="text" name="order_sn" value="{$search.order_sn|default=""}" class="form-control" placeholder="请输入{:lang('Serial Number')} ...">
+                    </div>-->
+                    <span class="input-group">{:lang('User Name')} :</span>
+                    <div class="input-group">
+                        <input type="text" name="user_name" value="{$search.user_name|default=""}" class="form-control" placeholder="{:lang('Please Input')} {:lang('UserName')} ...">
+                    </div>
+                    <span class="input-group">{:lang('Funds')}{:lang('Type')} :</span>
+                    <div class="input-group">
+                       <select class="form-control" name="cap_type">
+                        <option value="">{:lang('All')}</option>
+                        <option {notempty name="search.cap_type"}{eq name="search.cap_type" value="7"}selected{/eq}{/notempty} value="7">{:lang('Refund Deposit')}</option>
+                        <option {notempty name="search.cap_type"}{eq name="search.cap_type" value="6"}selected{/eq}{/notempty} value="6">{:lang('Pay Deposit')}</option>
+                        <option {notempty name="search.cap_type"}{eq name="search.cap_type" value="5"}selected{/eq}{/notempty} value="5">{:lang('Refund')}</option>
+                        <option {notempty name="search.cap_type"}{eq name="search.cap_type" value="4"}selected{/eq}{/notempty} value="4">{:lang('Withdrawal')}</option>
+                        <option {notempty name="search.cap_type"}{eq name="search.cap_type" value="3"}selected{/eq}{/notempty} value="3">{:lang('Fetch')}</option>
+                        <option {notempty name="search.cap_type"}{eq name="search.cap_type" value="2"}selected{/eq}{/notempty} value="2">{:lang('Pay')}</option>
+                        <option {notempty name="search.cap_type"}{eq name="search.cap_type" value="1"}selected{/eq}{/notempty} value="1">{:lang('Recharge')}</option>
+                        </select>
+                    </div>
+                    <!--<span class="input-group">{:lang('Funds')}{:lang('Source')}:</span>
+                    <div class="input-group">
+                        <select class="form-control" name="pay_type">
+                            <option value="">{:lang('Choose')}</option>
+                            {volist name="pay_type" id="vo" key="key"}
+                            <option value="{$key-1}" {notempty name="search.pay_type"}{eq name="search.pay_type" value="$key-1"}selected{/eq}{/notempty}>{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>-->
+                    <span class="input-group">{:lang('Create Time')} :</span>
+                    <div class="input-group">
+                        <input type="text" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The Start Time')}">
+                    </div>-
+                    <div class="input-group">
+                        <input type="text" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The End Time')}">
+                    </div>
+                    <span class="input-group">{:lang('Status')}:</span>
+                    <div class="input-group">
+                        <select class="form-control" name="state">
+                            <option value="">{:lang('All')}</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="2"}selected{/eq}{/notempty} value="2">{:lang('Processing is Complete')}</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="1"}selected{/eq}{/notempty} value="1">{:lang('Processing')}</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="0"}selected{/eq}{/notempty} value="0">{:lang('The Abolished')}</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{:lang('Serial Number')}</th>
+                            <th>{:lang('User Name')}</th>
+                            <th>{:lang('The Amount of Money')}(THB)</th>
+                            <th>{:lang('Fees')}(THB)</th>
+                            <th>{:lang('Funds')}{:lang('Type')}</th>
+                            <!--<th>{:lang('Funds')}{:lang('Source')}</th>-->
+                            <!--<th>{:lang('Current Balance')}</th>-->
+                            <th>{:lang('Create Time')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>{:lang('Note')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.order_sn}</td>
+                        <td>{$vo.user_name}</td>
+                        <td>{$vo.cash}</td>
+                        <td>{$vo.charge}</td>
+                        <td>
+                            {if condition = "$vo.cap_type eq '1'"}
+                            {:lang('Recharge')}
+                            {elseif condition = "$vo.cap_type eq '2'"}
+                            {:lang('Pay')}
+                            {elseif condition = "$vo.cap_type eq '3'"}
+                            {:lang('Fetch')}
+                            {elseif condition = "$vo.cap_type eq '4'"}
+                            {:lang('Withdrawal')}
+                            {elseif condition = "$vo.cap_type eq '5'"}
+                            {:lang('Refund')}
+                            {elseif condition = "$vo.cap_type eq '6'"}
+                            {:lang('finance_pay_deposit')}
+                            {else condition = "$vo.cap_type eq '7'"}
+                            {:lang('finance_refund_deposit')}
+                            {/if}
+                        </td>
+                        <!--<td>
+                            {if condition = "$vo.pay_type eq '0'"}
+                            {:lang('Account')}余额
+                            {elseif condition = "$vo.pay_type eq '1'"}
+                            {:lang('Pay')}宝
+                            {elseif condition = "$vo.pay_type eq '2'"}
+                            微信
+                            {else condition = "$vo.pay_type eq '3'"}
+                            {:lang('Other')}
+                            {/if}
+                        </td>-->
+                        <td>{$vo.create_time|date = "Y-m-d H:i:s",###}</td>
+                        <td>
+                            {if condition ="$vo.state eq '1'"}
+                                {:lang('Processing')}
+                            {elseif condition = "$vo.state eq '2'"}
+                                {:lang('Processing is Complete')}
+                            {else condition = "$vo.state eq '0'"}
+                                {:lang('The Abolished')}
+                            {/if}
+                        </td>
+                        <td>{$vo.title} {notempty name="vo.number"} / {$vo.number}{/notempty}</td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-offset-6 col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期{:lang('Time')}{:lang('Choose')}器所能够提供的最精确的{:lang('Time')}{:lang('Choose')}视图
+ });
+</script>
+
+{/block}

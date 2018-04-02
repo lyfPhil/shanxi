@@ -1,0 +1,292 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Game Card List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('The Game')}</a></li>
+    <li class="active">{:lang('Game Card List')}</li>
+  </ol>
+</section>
+<section class="content">
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <div>
+                 <a href="{:Url('admin/Pointcard/create_pointcard')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i> {:lang('Add Game Card')} </a>
+                <a href="javascript::void(0)" onclick="reorder()" class="btn btn-default btn-flat"><i class="fa fa-sort-amount-desc"></i> {:lang('The Sorting')}</a>
+            </div>
+            <br>
+            
+            <div class="">
+                <form method="get" class="form-inline">
+                    <span class="input-group">{:lang('Release Date:')}</span>
+                    <div class="input-group col-lg-2">
+                        <input type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The Start Time')}">
+                    </div>-
+                    <div class="input-group col-lg-2">
+                        <input type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The End Time')}">
+                    </div>
+                    <div class="input-group">
+                        <select class="form-control" name="recommend_status">
+                        <option value="">{:lang('Recommended Status')}</option>
+                        {volist name="recommend_status" id="vo" key="key"}
+                        <option value="{$key-1}" {notempty name="search.recommend_status"}{eq name="search.recommend_status" value="$key-1"}selected{/eq}{/notempty}>{$vo}</option>
+                        {/volist}
+                        </select>
+                    </div>
+                    <span class="input-group">{:lang('Release Status')}:</span>
+                    <div class="input-group">
+                        <select class="form-control" name="status">
+                            <option value="">{:lang('All')}</option>
+                            <option {notempty name="search.game_status"}{eq name="search.game_status" value="1"}selected{/eq}{/notempty} value="1">{:lang('Open')}</option>
+                            <option {notempty name="search.game_status"}{eq name="search.game_status" value="-1"}selected{/eq}{/notempty} value="-1">{:lang('Close')}</option>
+                        </select>
+                    </div>
+                    <div class="input-group col-lg-3">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="{:lang('Game Card Name')}">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div>
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-default btn-flat" href="{:Url('admin/Pointcard/pointcard')}">{:lang('Reset The Search')}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>{:lang('Game Card Serial Number')}</th>
+                            <th>{:lang('Game Card Name')}</th>
+                            <th>{:lang('Add the Time')}</th>
+                            <th>{:lang('The Sorting')}<i class="fa fa-fw fa-question-circle" data-toggle="tooltip" data-placement="top" title="{:lang('The greater the Digital, the more forward')}"></i></th>
+                            <th>{:lang('Whether to Recommend')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <form id="game" method="post">
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.game_name}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                            <input name="ids[]" type="hidden" value="{$vo.id}">
+                            <input class="form-control input-sm" style="width:50px;height:25px;" name="sort[]" type="text" value="{$vo.sort}">
+                        </td>
+                        <td>
+                            {if condition = "$vo.recommend_status eq '0'"}
+                            {:lang('NO')}
+                            {elseif condition = "$vo.recommend_status eq '1'"}
+                            {:lang('YES')}
+                            {else condition = "$vo.recommend_status eq '2'"}
+                            {:lang('Hot Recommended')}
+                            {/if}
+                        </td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                            <small class="label bg-light-blue"><i class="fa fa-check"></i></small>
+                            {else/}
+                            <small class="label bg-gray"><i class="fa fa-times"></i></small>
+                            {/eq}
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/pointcard/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                            <!--<a onClick="deleteOne({$vo.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>-->
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-4">
+                    <form method="post" class="form-inline">
+                        <div class="input-group">
+                            <div>
+                            <select id="type" class="form-control">
+                                <option value="hot">{:lang('Hot Recommended')}</option>
+                                <option value="recommend">{:lang('Recommended')}</option>
+                                <option value="notrecommend">{:lang('Cancel Recommended')}</option>
+                                <option value="low">{:lang('Off the Shelves')}</option>
+                                <option value="delete">{:lang('Delete')}</option>
+                            </select>
+                            </div>
+                            <span class="input-group-btn">
+                                <button type="button" onclick="apply()" class="btn btn-primary btn-flat"><i class="fa fa-save"></i>{:lang('Application')}</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6 pull-right">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期{:lang('Time')}{:lang('Choose')}器所能够提供的最精确的{:lang('Time')}{:lang('Choose')}视图
+ });
+</script>
+<script>
+    function reorder(){
+        $.ajax({
+            url:"{:Url('admin/game/reorder')}",
+            data:$("#game").serialize(),
+            type:'post',
+            dataType:'json',
+            success: function(xhr){
+                if(xhr.code == 200){
+                    swal(xhr.msg, "", "success");
+                }else{
+                    swal(xhr.msg, "", "error");
+                }
+            }
+        })
+    }
+
+    function deleteOne(id){
+            swal({
+                title: "{:lang('Are you sure you want to delete this message?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/game/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancel Operation')}", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "{:lang('Has not choose any record')}!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "{:lang('Are you sure you want to operate?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/game/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("{:lang('Cancel Operation')}", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

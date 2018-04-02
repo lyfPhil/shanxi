@@ -1,0 +1,128 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('The Order Number')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li class="active">{:lang('Statistical')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+      <div class="col-md-9">
+          <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">{:lang('Order Volume')}</h3>
+              <div class="box-tools pull-right">
+                  <form method="get">
+                    <label>{:lang('Goods')}{:lang('Type:')}</label>
+                    <select name="goods_type">
+                        <option value="">{:lang('All')}</option>
+                        {volist name="type" id="vo" key="key"}
+                        <option value="{$key-1}"{notempty name="search.goods_type"}{eq name="search.goods_type" value="$key-1"}selected{/eq}{/notempty}>{$vo}</option>
+                        {/volist}
+                    </select>
+                    <label>{:lang('Interval Screening:')}</label>
+                    <select name="date">
+                        <option {notempty name="search.date"}{eq name="search.date" value="7"}selected{/eq}{/notempty} value="7">{:lang('The Previous Week')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="14"}selected{/eq}{/notempty} value="14">{:lang('The First Two Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="21"}selected{/eq}{/notempty} value="21">{:lang('The First Three Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="30"}selected{/eq}{/notempty} value="30">{:lang('The First 30 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="60"}selected{/eq}{/notempty} value="60">{:lang('The First 60 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="180"}selected{/eq}{/notempty} value="180">{:lang('First Half of The Year')}</option>
+                    </select>
+                    <button type="submit">{:lang('Confirm')}</button>
+                  </form>
+              </div>
+            </div>
+            <div class="box-body chart-responsive">
+              <div class="chart" id="line-chart" style="height: 500px"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      </div>
+      <div class="col-md-9">
+          <!-- BAR CHART -->
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">{:lang('The Amount of Money by Order')}(HKD)</h3>
+
+              <div class="box-tools pull-right">
+                  <form method="get">
+                    <label>{:lang('Goods')}{:lang('Type:')}</label>
+                    <select name="goods_type">
+                        <option value="">{:lang('All')}</option>
+                        {volist name="type" id="vo" key="key"}
+                        <option value="{$key-1}"{notempty name="search.goods_type"}{eq name="search.goods_type" value="$key-1"}selected{/eq}{/notempty}>{$vo}</option>
+                        {/volist}
+                    </select>
+                    <label>{:lang('Interval Screening:')}</label>
+                    <select name="date">
+                        <option {notempty name="search.date"}{eq name="search.date" value="7"}selected{/eq}{/notempty} value="7">{:lang('The Previous Week')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="14"}selected{/eq}{/notempty} value="14">{:lang('The First Two Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="21"}selected{/eq}{/notempty} value="21">{:lang('The First Three Weeks')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="30"}selected{/eq}{/notempty} value="30">{:lang('The First 30 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="60"}selected{/eq}{/notempty} value="60">{:lang('The First 60 Days')}</option>
+                        <option {notempty name="search.date"}{eq name="search.date" value="180"}selected{/eq}{/notempty} value="180">{:lang('First Half of The Year')}</option>
+                    </select>
+                    <button type="submit">{:lang('Confirm')}</button>
+                  </form>
+              </div>
+            </div>
+            <div class="box-body chart-responsive">
+              <div class="chart" id="order-chart" style="height: 500px;"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      </div>
+
+  </div>
+</section>
+<!-- /.content -->
+{/block}
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/adminlte/css/morris.css">
+<script type="text/javascript" src="__STATIC__/static/adminlte/js/morris.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/adminlte/js/raphael.min.js"></script>
+<script>
+  $(function () {
+    "use strict";
+
+    // LINE CHART
+    var line = new Morris.Line({
+      element: 'line-chart',
+      resize: true,
+      data:{$order_data},
+      xkey: 'date',
+      ykeys: ['order_num'],
+      labels: ['{:lang('The Order Amount')}'],
+      lineColors: ['#3c8dbc'],
+      hideHover: 'auto',
+      parseTime: false
+    });
+    //order CHART
+    var bar = new Morris.Bar({
+      element: 'order-chart',
+      resize: true,
+      data: {$order_finance},
+      barColors: ['#3c8dbf', '#f56958'],
+      xkey: 'date',
+      ykeys: ['order_cash','order_charge'],
+      labels: ['{:lang('Amount of Order Transaction')}', '{:lang('Fees of Order Transaction')}'],
+      hideHover: 'auto',
+      parseTime: 'false'
+    });
+  });
+</script>
+{/block}
+

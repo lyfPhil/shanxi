@@ -1,0 +1,141 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    apk {:lang('Version List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Feedback')}</a></li>
+    <li class="active">apk {:lang('Version List')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('admin/version/create')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i>{:lang('Release a New Version')}</a>
+            <div class="pull-right">
+                <form method="get" class="form-inline">
+                    <div class="input-group">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="{:lang('Keywords')} ...">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{:lang('Serial Number')}</th>
+                            <th>{:lang('The Version Number')}</th>
+                            <th>{:lang('Download Address')}</th>
+                            <th>{:lang('Overseas Address')}</th>
+                            <th>{:lang('Size')}</th>
+                            <th>{:lang('System')}{:lang('Type')}</th>
+                            <th>{:lang('Force Update')}</th>
+                            <th>{:lang('Release Status')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>{$vo.new_version}</td>
+                        <td>{$vo.file_url}</td>
+                        <td>{$vo.file_url2}</td>
+                        <td>{$vo.target_size}</td>
+                        <td>
+                            {switch name="vo.type"}
+                                {case value="1"}安卓端{/case}
+                                {case value="2"}ios端{/case}
+                            {/switch}
+                        </td>
+                        <td>
+                            {switch name="vo.constraint"}
+                                {case value="1"}是{/case}
+                                {case value="0"}否{/case}
+                            {/switch}
+                        </td>
+                        <td>
+                            {switch name="vo.state"}
+                                {case value="1"}<small class="label bg-light-blue"><i class="fa fa-check"></i></small>{/case}
+                                {case value="-1"}<small class="label bg-gray"><i class="fa fa-times"></i></small>{/case}
+                            {/switch}
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/version/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                            <a onClick="deleteOne({$vo.id})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i></a>
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-offset-6 col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function deleteOne(id){
+            swal({
+                title: "{:lang('Determine')}{:lang('Delete')}这条信息吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/version/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancel')}{:lang('Operation')}", "", "error");
+                }
+            });
+    }
+
+</script>
+{/block}

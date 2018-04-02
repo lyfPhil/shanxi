@@ -1,0 +1,128 @@
+{extend name="travel/base" /}
+{block name="content"}
+<!-- banner-bottom -->
+<div class="banner-bottom">
+	<!-- container -->
+	<div class="container">
+		<div class="faqs-top-grids">
+			<div class="book-grids">
+				<div class="col-md-6 book-left">
+					<div class="book-left-info">
+						<h3>创建您的账号</h3>
+					</div>
+					<div class="book-left-form">
+						<form method="post" id="form" action="" class="form-horizontal">
+							<p>用户名</p>
+							<input type="text" value="" onfocus="this.value='';" onblur="if (this.value == '') {this.value ='';}" name="username">
+							<p>昵称</p>
+							<input type="text" value="" onfocus="this.value='';" onblur="if (this.value == '') {this.value ='';}" name="nickname">
+							<p>手机号</p>
+							<input type="text" value="" onfocus="this.value='';" onblur="if (this.value == '') {this.value ='';}" name="mobile">
+							<p>邮箱</p>
+							<input type="text" value="" onfocus="this.value='';" onblur="if (this.value == '') {this.value ='';}" name="email">
+							<p>密码</p>
+							<input type="password" name="password" id="password" >
+							<p>确认密码</p>
+							<input type="password" name="confirm_password">
+							<label for="checkbox"><input type="checkbox" id="checkbox"> <i>记住我</i></label>
+							<input type="submit" id="submit" value="注册">
+						</form>
+					</div>
+				</div>
+				<div class="col-md-6 book-left book-right">
+					<div class="book-left-info">
+						<h3>推荐</h3>
+					</div>
+					<div class="book-left-bottom">
+						<div class="book-left-facebook">
+							<a href="#">Connect with Facebook</a>
+						</div>
+						<div class="book-left-chrome">
+							<a href="#">Connect with Google</a>
+						</div>
+					</div>
+					<ul>
+						<li>Access booking history with upcoming trips</li>
+						<li>Print tickets and invoices</li>
+						<li>Make checkouts simpler</li>
+						<li>Enter your contact details only once</li>
+						<li>Get alerts for low fares</li>
+					</ul>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!-- //container -->
+</div>
+<!-- //banner-bottom -->
+{/block}
+
+{block name="js"}
+<script>
+	
+    $(function(){
+    	
+        $("#form").validate({
+            rules: {
+                username: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 32
+                },
+                password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 32
+                },
+                confirm_password: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 32,
+                    // equalTo: "#password"
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                mobile: {
+                    required: true,
+                    number: true
+                }
+            },
+            submitHandler: function(form) {
+            	console.log($(form).serialize());
+                // swal("submitted!");
+                $.ajax({
+                    url:"{:Url('home/user/register')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                            window.location.href="{:url('home/travel/blog')}";
+                        } else {
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

@@ -1,0 +1,189 @@
+{extend name="public/base" /}
+
+{block name="content"}
+
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="{:url('admin/index/index')}">后台首页</a></li>
+        <li><a href="{:url('admin/cate/show')}">栏目列表</a></li>
+        <li>编辑栏目</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 col-xs-12">
+            <div class="widget">
+                <div class="widget-header bordered-bottom bordered-blue">
+                    <span class="widget-caption">编辑栏目 &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;当前栏目：{$catedata.catename}</span>
+                </div>
+                <div class="widget-body">
+                    <div id="horizontal-form">
+                        <form method="post" id="form" action="" class="form-horizontal">
+                        <input type="hidden" name="id" value="{$catedata.id}">
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">上级栏目</label>
+                                <div class="col-sm-6">
+                                    <select name="pid">
+                                        <option value="0">顶级栏目</option>
+                                        {volist name="cateres" id="v"}
+                                        <option value="{$v.id}" {if condition="$catedata['pid'] eq $v.id"}selected="selected"{/if} >
+                                        {if condition="$v['level'] neq 0"}|{/if}<?php echo str_repeat('-', $v['level']*4)?>{$v.catename}
+                                        </option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right" >栏目名称</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control"  placeholder="" value="{$catedata.catename}" name="catename" type="text" required="">
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right" >关键词</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" value="{$catedata.keywords}" placeholder="" name="keywords" type="text" required="">
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right" >描述</label>
+                                <div class="col-sm-6">
+                                    <textarea id="desc" name="desc" class="form-control" >{$catedata.desc}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="group_id" class="col-sm-2 control-label no-padding-right">栏目类型</label>
+                                <div class="col-sm-6">
+                                    {volist name="cateTypeData" id="v"}
+                                    <div style="float:left; margin-right:10px;">
+                                        <label class="radio-line">
+                                            <input {if condition="$catedata.type eq $v.type_id"}checked="checked"{/if} name="type" value="{$v.type_id}"  type="radio">
+                                            {$v.type_name}
+                                        </label>
+                                    </div>
+                                    {/volist}
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">推荐到首页</label>
+                                <div class="col-sm-6">
+                                    <label  class="radio-line" style="float:left; margin-right:10px;" style="margin-right:15px;">
+                                        <input {if condition="$catedata.rec_index eq 1"}checked="checked"{/if} name="rec_index" value="1" type="radio">
+                                        是
+                                    </label>
+                                    <label class="radio-line" style="float:left; margin-right:10px;" style="margin-right:15px;">
+                                        <input {if condition="$catedata.rec_index eq 0"}checked="checked"{/if} class="inverted" name="rec_index" value="0" type="radio">
+                                        否
+                                    </label>
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">推荐到底部</label>
+                                <div class="col-sm-6">
+                                    <label class="radio-line" style="float:left; margin-right:10px;" style="margin-right:15px;">
+                                        <input {if condition="$catedata.rec_bottom eq 1"}checked="checked"{/if} name="rec_bottom" value="1" type="radio">
+                                        是
+                                    </label>
+                                    <label class="radio-line" style="float:left; margin-right:10px;" style="margin-right:15px;">
+                                        <input {if condition="$catedata.rec_bottom eq 0"}checked="checked"{/if} class="inverted" name="rec_bottom" value="0" type="radio">
+                                        否
+                                    </label>
+                                </div>
+                                <p class="help-block col-sm-4 red">* 必填</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label no-padding-right">内容</label>
+                                <div class="col-sm-6">
+                                    <textarea id="content" name="content" >{$catedata.content}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                     <div class="box-footer">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="btn-group">
+                                                <button class="btn btn-default btn-flat" type="reset">取消</button>
+                                                <button class="btn btn-primary btn-flat" id="submit" type="submit">保存</button>
+                                            </div>
+                                            <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返回</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Body -->
+
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 32
+                },
+                alias: {
+                    required: true,
+                    maxlength: 32
+                }
+            },
+            submitHandler: function(form) {
+                $.ajax({
+                    url:"{:Url('admin/cate/update')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}

@@ -1,0 +1,72 @@
+{extend name="travel/base" /}
+{block name="content"}
+	<!--//header-->
+	<!-- banner-bottom -->
+	<div class="banner-bottom">
+		<!-- container -->
+		<div class="container">
+			<div class="about-info">
+				<h2>博客</h2>
+			</div>
+			<div class="faqs-top-grids">
+				<div class="blog-grids">
+					<div class="col-md-8 blog-left">
+						{volist name="$res" id="v"}
+						<div class="blog-left-grid">
+							<p>由<a href="#">{$v.uid}</a> 发布于&nbsp;&nbsp; {$v.create_at|date='Y-m-d H:m:s A',###} &nbsp;&nbsp; <a href="#">评论（10）</a></p>
+							<a href="{:url('travel/single',['id'=>$v.id])}" target="_blank"><img src="images/banner1.jpg" alt=""></a>
+							<div class="blog-left-right">
+								<a href="single.html">{$v.title} </a>
+								<p>{$v.description}
+								</p>
+							</div>
+						</div>
+						{/volist}
+						<nav>
+							<ul class="pagination">
+								{$page}
+							</ul>
+						</nav>
+					</div>
+					<div class="col-md-4 blog-right">
+						<div class="Categories">
+							<h3>推荐文章</h3>
+							<ul>
+
+								<li><a href="#">Phasellus sem leo, interdum quis risus</a></li>
+
+							</ul>
+						</div>
+						<div class="Categories">
+							<h3>城市</h3>
+							<ul class="marked-list offs1">
+								{volist name="city" id='v'}
+								<li><a href="#">{$v.name} (7)</a></li>
+								{/volist}
+							</ul>
+						</div>
+						<div class="comments">
+							<h3>最新评论</h3>
+							{volist name="comment" id='v'}
+							<div class="comments-text">
+								<div class="col-md-3 comments-left">
+									<img src="images/user1.jpg" alt="">
+								</div>
+								<div class="col-md-9 comments-right">
+									<h5>{$v.username}</h5>
+									<a href="#">{$v.content}</a> 
+									<p>{$v.create_at|date="Y-m-d H:m:s a",###}</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>
+							{/volist}
+						</div>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //banner-bottom -->
+{/block}	

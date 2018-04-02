@@ -1,0 +1,205 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Consulting the List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Feedback')}</a></li>
+    <li class="active">{:lang('Consulting the List')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <div class="pull-right">
+                <form method="get" class="form-inline">      
+                    <div class="input-group">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="输入{:lang('The User')}账号 ...">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>{:lang('Serial Number')}</th>
+                            <th>{:lang('The User')}账号</th>
+                            <th>{:lang('Complaints')}</th>
+                            <th>投诉{:lang('Time')}</th>
+                            <th>回复{:lang('Time')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.nickname}</td>
+                        <td>{$vo.content}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>{if condition = "$vo.recovery_time gt 0"}
+                            {$vo.recovery_time|date="Y-m-d H:i:s",###}
+                            {else}
+                            {$vo.recovery_time}
+                            {/if}
+                        </td>
+                        <td>{switch name="vo.status"}
+                                {case value="1"}已解决{/case}
+                                {case value="2"}解决中{/case}
+                                {case value="3"}已撤回{/case}
+                            {/switch}
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/servicecenter/edit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    
+                </div>
+                <div class="col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function deleteOne(id){
+            swal({
+                title: "{:lang('Determine')}{:lang('Delete')}这条信息吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/cover/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancel')}{:lang('Operation')}", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么{:lang('Status')}$(this).is(":checked") 返回的是布尔{:lang('Type')}
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量{:lang('Operation')}
+    function apply(){
+        var chk_value =[]; 
+        $('input[name="ids[]"]:checked').each(function(){ 
+            chk_value.push($(this).val()); 
+        }); 
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "未{:lang('Choose')}任何记录!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "{:lang('Determine')}要进行{:lang('Operation')}吗?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/cover/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("{:lang('Cancel')}{:lang('Operation')}", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

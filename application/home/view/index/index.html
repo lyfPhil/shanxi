@@ -1,0 +1,124 @@
+{include file="/common/header" title="<?php echo($title); ?>" /}
+
+<main role="main">
+	<div id="intro-wrap">
+		<div id="intro" class="preload darken" data-autoplay="5000" data-navigation="true" data-pagination="true" data-transition="fadeUp">
+			{volist name="recArt" id="v"}
+			<div class="intro-item" style="background-image: url(__PUBLIC__{$v.thumb});">
+				<img src="{$v.thumb}" >
+				<div class="caption">
+					<h2>{$v.title}</h2>
+					<p>{$v.desc}</p>
+					<a class="button white transparent" href="{:url('article/index',array('artid'=>$v.id))}" target="_blank">了解更多</a>
+				</div><!-- caption -->
+
+			</div>
+			{/volist}
+
+		</div><!-- intro -->
+	</div><!-- intro-wrap -->
+
+
+	<div id="main">
+
+		<section class="row section">
+			<div class="row-content buffer even clear-after">
+
+                <div class="column four">
+                    <div class="small-icon red"><i class="icon icon-megaphone"></i></div>
+                    <div class="small-icon-text clear-after">
+                        <h4>简介</h4>
+                        <p class="text-xs">山西，因居太行山之西而得名，简称“晋”，又称“三晋”，省会太原市。“东依太行山，西、南依吕梁山、黄河，北依古长城，与河北、河南、陕西、内蒙古等省区为界”柳宗元称之为“表里山河”。山西东有太行山，西有吕梁山，山区面积约占全省总面积的80%以上。</p>
+                    </div>
+                </div>
+				<div class="column four">
+					<div class="small-icon red"><i class="icon icon-doc"></i></div>
+					<div class="small-icon-text clear-after">
+						<h4>历史</h4>
+						<p class="text-xs">山西是中华民族的发祥地之一，历史悠久，人文荟萃，历史文化遗产灿若繁星中国许多的神话传说女娲补天、后羿射日、精卫填海、愚公移山等等都源于这里。</p>
+					</div>
+				</div>
+				<div class="column four last">
+					<div class="small-icon red"><i class="icon icon-tablet"></i></div>
+					<div class="small-icon-text clear-after">
+						<h4>地理</h4>
+						<p class="text-xs">山西省是中国的一个内陆省份。位于黄河中游东岸，华北平原西面的黄土高原上。省境四周山环水绕，与邻省（区）的自然境界分明。东以太行山与河北省为邻；西、南隔黄河与陕西省、河南省相望；北以外长城为界与内蒙古自治区毗连。</p>
+					</div>
+				</div>
+
+				<div class="column four">
+					<div class="small-icon red"><i class="icon icon-tablet"></i></div>
+					<div class="small-icon-text clear-after">
+						<h4>交通</h4>
+						<p class="text-xs">山西省地处中国中部地区，邻近北京、天津、郑州、洛阳、西安、石家庄等城市，陆空交通便捷，目前已形成以铁路、公路、航空立体交通运输网络，旅游者出入非常方便。山西省铁路线有从大同到风陵渡的同蒲线纵贯南北，还有石太线、京包线、京原线、太焦线、邯长线、大秦线、神黄线等铁路线从省内通过，可以通达国内大部分大中城市。</p>
+					</div>
+				</div>
+				<div class="column four">
+					<div class="small-icon red"><i class="icon icon-megaphone"></i></div>
+					<div class="small-icon-text clear-after">
+						<h4>经济</h4>
+						<p class="text-xs">2017年，全省接待入境旅游者95.71万人次，实现海外旅游创汇3.5亿美元，同比增长分别为6.38%、10.32%。累计接待国内游客5.6亿人次，实现国内旅游收入5338.61亿元，同比增长分别为26.49%、26.27%。实现旅游总收入5360.21亿元，同比增长26.21%。山西旅游发展进入快车道，在促进全省转型发展中的作用愈加凸显。</p>
+					</div>
+				</div>
+				<div class="column four last">
+					<div class="small-icon red"><i class="icon icon-multiview"></i></div>
+					<div class="small-icon-text clear-after">
+						<h4>城市</h4>
+						<p class="text-xs">山西位于太行山之西，黄河以东，省会城市是太原市。山西是华夏文明的摇篮，被誉为“表里山河”，这里名胜古迹历史名人众多，所以每个城市都是各有千秋，值得一去。</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 最新文章 -->
+		<section class="row section">
+			<div class="row-content buffer even clear-after">
+				<div class="section-title"><h3>热门文章</h3></div>
+				<div class="grid-items blog-section masonry-style preload">
+                {volist name="siteHotArt" id="v"}
+					{eq name='v.item' value='three'}
+					<article class="item column {$v.item}">
+						<a target="_blank" href="{:url('article/index',array('artid'=>$v.id))}">
+							<figure><img src="{$v.thumb}" alt=""><span class="blog-overlay"><i class="icon icon-doc"></i></span></figure>
+							<div class="blog-excerpt">
+								<div class="blog-excerpt-inner">
+									<h5 class="meta-post">{$v.author}</h5>
+									<h2>{$v.title}</h2>
+									<p>{$v.desc}</p>
+								</div>
+							</div>
+						</a>
+					</article>
+					{/eq}
+					{eq name='v.item' value='six'}
+					<article class="item column six">
+						<a target="_blank" href="{:url('article/index',array('artid'=>$v.id))}">
+							<figure><img src="{$v.thumb}" alt=""><span class="blog-overlay"><i class="icon icon-doc"></i></span></figure>
+							<div class="blog-excerpt">
+								<div class="blog-excerpt-inner">
+									<h5 class="meta-post">{$v.author}</h5>
+									<h2>{$v.title}</h2>
+								</div>
+							</div>
+						</a>
+					</article>
+					{/eq}
+                {/volist}
+
+                <div class="shuffle-sizer three"></div>
+				</div><!-- grid-items -->
+				<div class="more-btn"><a class="button transparent aqua" href="all">查看全部</a></div>
+			</div>
+		</section>
+
+
+		<!-- 名言 -->
+		<!--  -->
+
+
+
+
+	</div><!-- id-main -->
+</main><!-- main -->
+
+{include file="/common/footer" /}

@@ -1,0 +1,170 @@
+{extend name="public/base" /}
+{block name="style"}
+    <style>
+        label {margin-bottom: 20px;}
+    </style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Recharge Details')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Financial')}</a></li>
+    <li class="active">{:lang('Recharge Details')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Recharge Details')}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                         <ul class="list-unstyled">
+                            <li>
+                                <label style="width: 30%">{:lang('Recharge Number:')}</label>{$detail.charge_no}
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('User Name:')}</label>{$detail.user_name}</li>
+                            <li>
+                                <label style="width: 30%">{:lang('Recharge Amount:')}</label>THB{$detail.cash}</li>
+                            <li>
+                                <label style="width: 30%">{:lang('Recharge Method:')}</label><span>{$detail.pay_type}</span></li>
+                            <li>
+                                <label style="width: 30%">{:lang('Create Time:')}</label><span>{$detail.create_time}</span></li>
+                            <!--<li>
+                                <label style="width: 30%">{:lang('Expiration Date:')}</label><span>{$detail.over_time}</span>
+                            </li>-->
+                            <li><label style="width: 30%">{:lang('Recharge')} {:lang('Status:')}</label>
+                                <span>
+                                    {switch $detail.state}
+                                        {case value="0"}{:lang('Untreated')}{/case}
+                                        {case value="1"}{:lang('Success')}{/case}
+                                        {case value="2"}{:lang('Cancelled')}{/case}
+                                        {case value="3"}{:lang('Treasurer Audited')}{/case}
+                                    {/switch}
+                                </span>
+                            </li>
+                            {if condition = "($detail.state eq '3') or ($detail.state eq '1')"}
+                            <li>
+                                <label style="width: 30%">{:lang('Remittance Flow:')}</label>
+                                <span>{$detail.pay_info}</span>
+                            </li>
+                            <li>
+                                <label style="width: 30%">{:lang('Remittance Time:')}</label>
+                                <span>{$detail.pay_time}</span>
+                            </li>
+                            {/if}
+                            {if condition = "$detail.state eq '3'"}
+                            <li>
+                                <label style="width: 30%">{:lang('Operation')}：</label>
+                                <span>
+                                    <input type="radio" name="state"{notempty name="$detail.state"}{eq name="detail.state" value="1"}checked{/eq}{/notempty}  value="1">{:lang('Confirm')}{:lang('Recharge')}
+                                </span>
+                            </li>
+                            {/if}
+                            {if condition = "$detail.state eq '2'"}
+                            <li>
+                                <label style="width: 30%">{:lang('Reasons for Cancellation:')}</label><span>{$detail.cancel}</span>
+                            </li>
+                            {/if}
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <input type="hidden" name="charge_no" value="{$detail.charge_no}">
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                        {if condition = "($detail.state eq '0') or ($detail.state eq '3')"}
+                        <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                        {/if}
+                    </div>
+                </div>
+              </div>
+            </form>
+    </div>
+
+</section>
+{/block}
+<!-- /.content -->
+{block name="js"}
+<script>
+    $(function(){
+        $(":radio").click(function(){
+            var check = $(this).val();
+            if(check == '0'){
+                $("#delay").css({"display":"none"});
+                $("#confirm").css({"display":""});
+            }
+            if(check == '1'){
+                $("#confirm").css({"display":"none"});
+                $("#delay").css({"display":""});
+            }
+        });
+        $("#form").validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 64
+                }
+            },
+            submitHandler: function(form) {
+                $("#submit").attr({"disabled":"disabled"});
+                swal({
+                title: "{:lang('Determine Submit')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                    url:"{:Url('admin/recharge/update')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title:xhr.msg,
+                                text:"",
+                                type:'success',
+                            },function(isConfirm){
+                                window.history.back();
+                            })
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                    })
+                } else {
+                    swal("{:lang('Cancel Operation')}", "", "error");
+                }
+            });
+            }
+        });
+
+    });
+</script>
+<script>
+    $(function(){
+        var state = '{$detail.state}';
+        if(state == 1 || state==2 || state==3)){
+            $("#submit").attr({"disabled":"disabled"});
+        }
+    }
+</script>
+{/block}

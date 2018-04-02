@@ -1,0 +1,111 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a>商品</a></li>
+        <li><a href="{:url('goods/index')}">商品列表</a></li>
+        <li>商品详情</li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+           <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">商品详情</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                         <ul class="list-unstyled">
+                            <li>
+                                <label style="width:20%">商品标题：</label>
+                                <a href='#' id="pTitle">{$data.title}</a>
+                            </li>
+                            <li>
+                                <label style="width:20%">商品ID：</label>{$data.id}
+                            </li>
+                            <li>
+                                <label style="width:20%">商品序列号：</label>{$data.order_number}
+                            </li>
+                            <li>
+                                <label style="width:20%">商品名称：</label>{$data.game_name}
+                            </li>
+                            <li>
+                                <label style="width:20%">商品类型：</label>{$data.goods_type_name}
+                            </li>
+                            <li>
+                                <label style="width:20%">交易类型：</label><?php if($data['deliver_id']==1) echo "{:lang('Guarantee')}"; else echo "{:lang('Consignment')}"; ?>
+                            </li>
+                            <li>
+                                <label style="width:20%">商品现价：</label>RMB {$data.price}
+                            </li>
+                            <li>
+                                <label style="width:20%">商品原价：</label>RMB {$data.old_price}
+                            </li>
+                            <li>
+                                <label style="width:20%">商品库存数量：</label>{$data.stock}
+                            </li>
+                            <li>
+                                <div class="row">
+                                    <label style="padding-left: 15px;width:20%;float: left">商品描述：</label>
+                                    <span style="float: left">{$data.text}</span>
+                                </div>
+                            </li>
+                            <li>
+                                <label style="width:20%">发布时间：</label><span>{$data.create_time}</span>
+                            </li>
+                            <li>
+                                {if condition='$data.over_time neq NULL'}
+                                    <label style="width:20%">过期时间：</label><span>{$data.over_time}</span>
+                                {else/}
+                                    <label style="width:20%">过期时间：</label><span>无</span>
+                                {/if}
+                            </li>
+
+                            <li>
+                                <label style="width:20%"><img src="{$data.pic_url}" style="width:300px;height: 200px;" onclick='window.open($(this).attr("src"))'/></label>
+                            </li>
+                         </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">返回</a>
+                    </div>
+                </div>
+              </div>
+            </form>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+{block name="js"}
+<script type="text/javascript">
+     function get_password(t){
+        var pw_type = $(t).attr('id');
+                var id = '{$data.id}';
+                $.ajax({
+                    url:"{:Url('admin/goods/getPassword')}",
+                    data:{'pw_type':pw_type,'id':id},
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            $(t).parent().text(xhr.data['pwd']);
+                        }else{
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                });
+    }
+
+</script>
+{/block}

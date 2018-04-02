@@ -1,0 +1,148 @@
+{extend name="public/base" /}
+{block name="style"}
+    <style>
+        #bank_card_font {
+            float: left;
+            margin-top: 6px;
+            font-size: 14px;
+        }
+        #bank_card {
+            background-repeat: no-repeat;
+            width: 337px;
+        }
+        #m_bank_icon{
+            width: 320px;
+        }
+    </style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('The Public Bank Information')}[{:lang('List')}]
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Financial')}</a></li>
+    <li class="active">{:lang('The Public Bank Information')}[{:lang('List')}]</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <a href="{:Url('admin/bankinfo/create_qly_bank')}" class="btn btn-default btn-flat"><i class="fa fa-plus-square"></i> {:lang('Add')} {:lang('The Bank Information')}</a>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>{:lang('Gathering Information')}</th>
+                            <th>{:lang('Mobile Phone Icon')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="qly_bank" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>
+                            <div id="bank_card_font">
+                                <p>{:lang('Bank Name')}:{$vo.bank_name}</p>
+                                <p>{:lang('Bank Card Number')}:{$vo.bank_card}</p>
+                                <p>{:lang('The Payee')}:{$vo.receiver}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <img id ="m_bank_icon" src="{$vo.bank_icon}"/>
+                        </td>
+                        <td>
+                            {eq name="vo.status" value="1"}
+                                <small class="label bg-light-blue"><i class="fa fa-check"></i></small>
+                            {else }
+                                <small class="label bg-gray"><i class="fa fa-times"></i></small>
+                            {/eq}
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="{:url('admin/bankinfo/edit_qly_bank',['id'=>$vo.id])}">{:lang('Edit')}</a>
+                            {switch name='$vo.status'}
+                                {case value='0'}
+                                    <a onClick="turnOnOff({$vo.id},0)">{:lang('Start')}</a>
+                                {/case}
+                                {case value='1'}
+                                    <a onClick="turnOnOff({$vo.id},1)">{:lang('Off')}</a>
+                                {/case}
+                            {/switch}
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function turnOnOff(id, status){
+        if (status == 0) {
+            var title = "{:lang('be sure to turn on')}";
+        } else {
+            var title = "{:lang('be sure to turn off')}";
+        }
+        swal({
+            title: title,
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "{:lang('confirm')}",
+            cancelButtonText: "{:lang('cancel')}",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url:"{:url('admin/bankinfo/remove_qly_bank')}",
+                    data:{'id':id},
+                    type:'post',
+                    dataType:'json',
+                    success: function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title:"{:lang('success')}",
+                                text:'',
+                                type:'success',
+                            },function(isConfirm){
+                                window.location.reload();
+                            });
+                        } else {
+                            swal(xhr.msg, "", "error");
+                        }
+                    }
+                })
+            } else {
+                swal("{:lang('Cancel')}{:lang('Operation')}", "", "error");
+            }
+        });
+    }
+
+
+</script>
+{/block}

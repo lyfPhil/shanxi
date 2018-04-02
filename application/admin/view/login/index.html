@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Page title -->
+    <title>管理员登录</title>
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="__STATIC__/static/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="__STATIC__/static/adminlte/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="__STATIC__/static/adminlte/css/skins/_all-skins.min.css">
+    <!-- sweetalert -->
+    <link rel="stylesheet" href="__STATIC__/static/sweetalert/sweet-alert.css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="__STATIC__/static/js/html5shiv.min.js"></script>
+    <script src="__STATIC__/static/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    管理员登录
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg"></p>
+
+    <form action="" method="post">
+      <div class="form-group has-feedback">
+        <input type="text" name="username" class="form-control" placeholder="用户名" required="">
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input type="password" name="password" class="form-control" placeholder="密码" required="">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+            <div class="row">
+              <div class="col-xs-6">
+                <input type="text" name="verify_code" class="form-control" placeholder="验证码" required="">
+              </div>
+              <div class="col-xs-6" style="padding:0px">
+                 <img id="captchaimg" src="{:captcha_src()}" /> 
+                 <i class="fa fa-refresh" id='refcaptcha'></i>
+              </div>
+            </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-8">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"> 记住我
+            </label>
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-4">
+          <button type="button" id="submit" class="btn btn-primary btn-block btn-flat">登录</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery 2.2.3 -->
+<script src="__STATIC__/static/jquery/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="__STATIC__/static/bootstrap/js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="__STATIC__/static/adminlte/js/app.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="__STATIC__/static/adminlte/js/demo.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="__STATIC__/static/adminlte/js/jquery.slimscroll.min.js"></script>
+<!-- jquery-validation -->
+<script src="__STATIC__/static/jquery-validation/jquery.validate.min.js"></script>
+<script src="__STATIC__/static/jquery-validation/jquery.validate.zh.js"></script>
+<!-- sweetalert -->
+<script src="__STATIC__/static/sweetalert/sweet-alert.min.js"></script>
+
+{block name="js"}
+
+<script>
+$("#submit").click(function(){
+    login();
+});
+
+ $(function () {
+     $('#refcaptcha').on('click', function(){
+         $('#captchaimg').get(0).src=($('#captchaimg').get(0).src+'?=r'+Math.random(1, 10000));
+     });
+     $('#captchaimg').on('click', function(){
+         $('#captchaimg').get(0).src=($('#captchaimg').get(0).src+'?=r'+Math.random(1, 10000));
+     });
+ })
+
+
+document.onkeydown = function (event) {
+    var e = event || window.event || arguments.callee.caller.arguments[0];
+    if (e && e.keyCode == 13) {
+        login();
+    }
+};
+
+function login() {
+    $.ajax({
+        type:'post',
+        url: "{:url('admin/login/doLogin')}",
+        data: {
+          username:$("[name='username']").val(),
+          password:$("[name='password']").val(),
+          verify_code:$("[name='verify_code']").val(),
+          type:1
+        },
+        success: function(r){
+            console.log(r);
+            if(r.code == 1){
+                $(".login-box-msg").html('<span class="text-blue">'+r.msg+'</span>');
+                window.location.href="{:url('admin/index/index')}";
+            } else {
+                $(".login-box-msg").html('<span class="text-red">'+r.msg+'</span>');
+            }
+            $('#refcaptcha').click();
+        }
+    });
+}
+</script>
+{/block}
+</body>
+</html>

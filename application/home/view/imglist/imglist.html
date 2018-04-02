@@ -1,0 +1,52 @@
+{include file="common/header" title="<?php echo($title); ?>" /}
+<!-- <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/index/style/imglist.css"> -->
+
+<script>
+    $('body').addClass('portfolio');
+    $('body').removeClass('page');
+    // document.body.classList.add('list-styl');
+</script>
+
+<main role="main">
+
+
+    <div id="main" class="row">
+        <div class="row-content buffer clear-after">
+            <ul class="inline cats filter-options">
+                {volist name='cityinfo' id='v'}
+                <li data-group="{$v.name}">{$v.name}</li>
+                {/volist}
+                <li data-group="全部">全部</li>
+            </ul>
+
+            <div class="grid-items portfolio-section preload">
+                {volist name='artRes' id='vo'}
+                <article class="item column {$vo.icon}" data-groups='["{$vo.name}", "全部"]'>
+                    <figure><img src="{$vo.thumb}"  alt=""></figure>
+                    <a class="overlay" href="{:url('article/index',array('artid'=>$vo.id))}" target="_blank">
+                        <div class="overlay-content">
+                            <div class="post-type">
+                                <i class="icon icon-camera"></i>
+                            </div>
+                            <h2>{$vo.title}</h2>
+                            <p>{$vo.desc}</p>
+                        </div>
+                    </a>
+                </article>
+                {/volist}
+
+                <div class="shuffle-sizer four"></div>
+            </div><!-- grid-items -->
+            <div id="pagination">
+                <ul class="clear-after reset plain">
+                    <li id="older" class="pagination-nav"><a href="#" class="button transparent aqua"><i class="fa fa-chevron-left"></i><span class="label">上一页</span></a></li>
+                    <li id="newer" class="pagination-nav"><a href="#" class="button transparent aqua"><span class="label">下一页</span><i class="fa fa-chevron-right"></i></a></li>
+                </ul>
+            </div>
+
+        </div><!-- row-content -->
+    </div><!-- row -->
+</main><!-- main -->
+
+
+{include file="common/footer" /}

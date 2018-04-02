@@ -1,0 +1,250 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    {:lang('Refund of Deposit')} {:lang('List')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">{:lang('Financial')}</a></li>
+    <li class="active">{:lang('Refund of Deposit')} {:lang('List')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            
+            <div class="pull-right">
+                <form method="get" class="form-inline">
+                    <span class="input-group">{:lang('Application Number:')}</span>
+                    <div class="input-group" style="width:18%">
+                        <input type="text" name="draw_no" value="{$search.draw_no|default=""}" class="form-control" placeholder="{:lang('Please Input')} {:lang('Withdrawal')} {:lang('Serial Number')}">
+                    </div>
+                    <span class="input-group">{:lang('User Name')} :</span>
+                    <div class="input-group" style="width:12%">
+                        <input type="text"  name="user_name" value="{$search.user_name|default=""}" class="form-control" placeholder="{:lang('User Name')}">
+                    </div>
+                    <span class="input-group">{:lang('Time of Apply')} :</span>
+                    <div class="form-group" style="width:15%">
+                        <input style="width:100%" type="" name="first_time" value="{$search.first_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The Start Time')}">
+                    </div>-
+                    <div class="form-group" style="width:15%">
+                        <input style="width:100%" type="" name="end_time" value="{$search.end_time|default=""}" class="form_datetime form-control" placeholder="{:lang('The End Time')}">
+                    </div>
+                    <div class="input-group">
+                        <select class="form-control" name="state">
+                            <option value="">{:lang('All')}</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="1"}selected{/eq}{/notempty} value="1">{:lang('Untreated')}</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="2"}selected{/eq}{/notempty} value="2">{:lang('Refunded')}</option>
+                            <option {notempty name="search.state"}{eq name="search.state" value="0"}selected{/eq}{/notempty} value="0">{:lang('Cancelled')}</option>
+                        </select>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                        </span>
+                    </div>
+                    <!-- <div class="input-group" style="width:15%">
+                      <input type="text" name="keywords" value="{$search.keywords|default=""}" class="form-control" placeholder="{:lang('Please Input')} {:lang('keywords')}">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-flat">{:lang('Search')}</button>
+                      </span>
+                    </div> -->
+                    <div class="btn-group">
+                        <a class="btn btn-default btn-flat" href="{:Url('admin/withdraw/depositlist')}">{:lang('Reset The Search')}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><input id="checkAll" type="checkbox"></th>
+                            <th>{:lang('Apply for The Serial Number.')}</th>
+                            <th>{:lang('User Name')}</th>
+                            <th>{:lang('The Amount of Deposit')}</th>
+                            <th>{:lang('Estimated Arrival Amount')}</th>
+                            <th>{:lang('Time of Apply')}</th>
+                            <th>{:lang('Status')}</th>
+                            <!--<th>{:lang('Operation')}</th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td><input name="ids[]" value="{$vo.id}" type="checkbox"></td>
+                        <td>{$vo.order_sn}</td>
+                        <td>{$vo.user_name}</td>
+                        <td>{$vo.cash}</td>
+                        <td>{$vo.cash}</td>
+                        <td>{$vo.create_time|date = "Y-m-d H:i:s",###}</td>
+                        <td>
+                            {if condition ="$vo.state eq '1'"}
+                            {:lang('Untreated')}
+                            {elseif condition = "$vo.state eq '2'"}
+                            {:lang('Refunded')}
+                            {else}
+                            {:lang('Cancelled')}
+                            {/if}
+                        </td>
+<!--                        <td>
+                            <div class="btn-group">
+                                <a href="{:Url('admin/withdraw/editdeposit',['id'=>$vo.id])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                            </div>
+                        </td>-->
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <div class="pull-right">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/static/bootstrap/css/bootstrap-datetimepicker.css">
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="__STATIC__/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--日历控件-->
+<script type="text/javascript">
+ $(".form_datetime").datetimepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    showMeridian: true,
+    pickerPosition: "bottom-left",
+    language: 'en-us',//中文，需要引用zh-CN.js包
+    startView: 2,//月视图
+    minView: 2//日期
+ });
+</script>
+<script>
+    function deleteOne(id){
+            swal({
+                title: "{:lang('Are you sure you want to delete this message?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/cover/remove')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal(xhr.msg, "", "success");
+                                $("#t_"+id).remove();
+                            }else{
+                                swal(xhr.msg, "", "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancel Operation')}", "", "error");
+                }
+            });
+    }
+
+    //全选
+    $("#checkAll").click(function(){
+    //判断当前点击的复选框处于什么
+    if($(this).is(":checked")){
+        $("input[name='ids[]']").prop("checked",true);
+    }else{
+        $("input[name='ids[]']").prop("checked",false);
+        }
+    });
+
+    //批量
+    function apply(){
+        var chk_value =[];
+        $('input[name="ids[]"]:checked').each(function(){
+            chk_value.push($(this).val());
+        });
+        var type = $('#type option:selected').val() ;
+        if(chk_value.length < 1){
+            swal({
+                title: "{:lang('Has not choose any record')}!",
+                text: "",
+                type: "error"
+            });
+        }else{
+            swal({
+                title: "{:lang('Are you sure you want to operate?')}",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{:lang('Determine')}",
+                cancelButtonText: "{:lang('Cancel')}",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url:"{:url('admin/cover/handle')}",
+                            data:{'ids':chk_value, 'type':type},
+                            type:'post',
+                            dataType:'json',
+                            success: function(xhr){
+                                if(xhr.code == 200){
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "success",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        },function (isConfirm) {
+                                            if (isConfirm) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                }else{
+                                    swal({
+                                        title: xhr.msg,
+                                        text: "",
+                                        type: "error",
+                                        confirmButtonText: "{:lang('Determine')}",
+                                        });
+                                }
+                            }
+                        })
+                    } else {
+                        swal("{:lang('Cancel Operation')}", "", "error");
+                    }
+                });
+        }
+    }
+
+</script>
+{/block}

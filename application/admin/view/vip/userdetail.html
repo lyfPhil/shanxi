@@ -1,0 +1,184 @@
+{extend name="public/base" /}
+{block name="style"}
+<style>
+    .box {
+        width: 44%;
+    }
+    .box-body{
+        padding: 23px;
+    }
+    label {
+        margin-bottom: 20px;
+        width: 20%
+    }
+</style>
+{/block}
+{block name="content"}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+        VIP{:lang('The User')}{:lang('Details')}
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>{:lang('Home Page')}</a></li>
+    <li><a href="#">vip</a></li>
+    <li class="active">VIP{:lang('The User')}{:lang('Details')}</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="box box-solid">
+
+        <div class="box-body">
+            <div class="table-responsive">
+                <ul class="list-unstyled">
+                    <li>
+                        <label>{:lang('Serial Number')}：</label>{$detail.id}
+                    </li>
+                    <li>
+                        <label>授予特权{:lang('The User')}：</label>{$detail.username}
+                    </li>
+                    <li>
+                        <label>特权{:lang('Name')}：</label>{$detail.vip_name}
+                    </li>
+                    <li>
+                        <label>特权开始{:lang('Time:')}</label>{$detail.start_time|date="Y-m-d H:i:s",###}
+                    </li>
+                    <li>
+                        <label>特权结束{:lang('Time:')}</label>{$detail.end_time|date="Y-m-d H:i:s",###}
+                    </li>
+                    <li>
+                        <label>{:lang('Status:')}</label>
+                        {if condition ="($Think.server.REQUEST_TIME lt $detail.start_time) and ($detail.status eq 1)"}
+                            未生效
+                        {elseif condition="($Think.server.REQUEST_TIME lt $detail.end_time) and ($detail.status eq 1)"}
+                            生效中
+                        {elseif condition="($Think.server.REQUEST_TIME gt $detail.end_time) or ($detail.status eq 0)"}
+                            失效
+                        {/if}
+                    </li>
+                    <li>
+                        <label>{:lang('History:')}</label>
+                    </li>
+                </ul>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{:lang('Serial Number')}</th>
+                            <th>{:lang('Status')}</th>
+                            <th>开始{:lang('Time')}</th>
+                            <th>结束{:lang('Time')}</th>
+                            <th>{:lang('Operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="list" id="vo"}
+                    <tr  id = "t_{$vo.id}">
+                        <td>{$vo.id}</td>
+                        <td>
+                            {if condition ="($Think.server.REQUEST_TIME lt $vo.start_time) and ($vo.status eq 1)"}
+                                未生效
+                            {elseif condition="($Think.server.REQUEST_TIME lt $vo.end_time) and ($vo.status eq 1)"}
+                                生效中
+                            {elseif condition="($Think.server.REQUEST_TIME gt $vo.end_time) or ($vo.status eq 0)"}
+                                失效
+                            {/if}
+                        </td>
+                        <td>{$vo.start_time|date="Y-m-d H:i:s",###}</td>
+                        <td>{$vo.end_time|date="Y-m-d H:i:s",###}</td>
+                        <td>
+                          <div class="btn-group">
+                            {if condition="($Think.server.REQUEST_TIME gt $vo.end_time) or ($vo.status eq 0)"}
+                            {else/}
+                                <a style="cursor:pointer;" onClick="deleteOne({$vo.id})">{:lang('Revoke Privileges')}</a>
+                            {/if}
+                          </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-6">
+
+                </div>
+                <div class="col-sm-6">
+                    <div class="pull-right">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+    function showdetail(user_id, type, id){
+        $.ajax({
+            url:"{:url('admin/vip/userdetail')}",
+            data:{'id':id,'user_id':user_id,'type':type},
+            type:'post',
+            dataType:'json',
+            success: function(xhr){
+                if (xhr.code == 200) {
+                    swal({
+                        title:'dsfsd',
+                        content: 'admin/vip/userdetail' ,
+                    });
+                }
+            }
+        })
+    }
+    function deleteOne(id,status){
+            swal({
+                title: "{:lang('Determine')}撤销该{:lang('The User')}特权",
+                text: "注意！撤销后将不能重新{:lang('Open')}",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                cancelButtonText: "{:lang('Cancel')}",
+                confirmButtonText: "{:lang('Determine')}",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        url:"{:url('admin/vip/undouser')}",
+                        data:{'id':id},
+                        type:'post',
+                        dataType:'json',
+                        success: function(xhr){
+                            if(xhr.code == 200){
+                                swal({
+                                    title: xhr.msg,
+                                    text:'',
+                                    type:'success',
+                                    confirmButtonText:"{:lang('Determine')}",
+                                    closeOnCancel: false
+                                },function(isConfirm){
+                                    window.location.reload();
+                                });
+                            } else {
+                                swal(msg,'', "error");
+                            }
+                        }
+                    })
+                } else {
+                    swal("{:lang('Cancelled')}{:lang('Operation')}");
+                }
+            });
+    }
+
+
+</script>
+{/block}

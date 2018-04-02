@@ -1,0 +1,174 @@
+{extend name="public/base" /}
+
+{block name="content"}
+<!-- Page Breadcrumb -->
+<div class="page-breadcrumbs">
+    <ul class="breadcrumb">
+        <li><a href="#">景点文章</a></li>
+        <li><a href="#">栏目管理</a></li>
+    </ul>
+</div>
+<!-- /Page Breadcrumb -->
+
+<!-- Page Body -->
+<div class="page-body">
+<!-- Main content -->
+<section class="content">
+        <div class="box box-solid">
+            <form method="post" id="form" action="" class="form-horizontal">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">{:lang('Basic Information')}</a></li>
+                  <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">SEO {:lang('Setting')}</a></li>
+                  <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Classification')}</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" name="parent_id">
+                                    <option value="0">{:lang('Classification')}</option>
+                                    {volist name="data.category" id="vo"}
+                                    <option {eq name="data.parent_id" value="$vo.id"}selected{/eq} value="{$vo.id}">{$vo.html}{$vo.title}{$vo.html}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Name')}</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="title" value="{$data.title}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('The Alias')}</label>
+                            <div class="col-sm-5">
+                                <input type="text" name="alias" value="{$data.alias}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Model')}</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" name="type">
+                                    <option {eq name="data.type" value="1"}selected{/eq} value="1">封面模式</option>
+                                    <option {eq name="data.type" value="0"}selected{/eq} value="0">列表模式</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Status')}</label>
+                            <div class="col-sm-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" {eq name="data.status" value="0"}checked{/eq} value="0"> 
+                                    隐藏
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" {eq name="data.status" value="1"}checked{/eq} value="1"> 显示
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('The Sorting')}</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="reorder" value="{$data.reorder}" class="form-control">
+                            </div>
+                        </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane" id="tab_3">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">SEO {:lang('Keywords')}</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="keywords" value="{$data.keywords}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">SEO {:lang('Description')}</label>
+                            <div class="col-sm-10">
+                                <textarea name="description" class="form-control" rows="3">{$data.description}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{:lang('Content')}</label>
+                            <div class="col-sm-10">
+                                {cms:ueditor name='content'/}{$data.content}{/cms:ueditor}
+                            </div>
+                        </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+                <div class="box-footer">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="btn-group">
+                            <input type="hidden" name="id" value="{$data.id}">
+                            <button class="btn btn-default btn-flat" type="reset">{:lang('Cancel')}</button>
+                            <button class="btn btn-primary btn-flat" id="submit" type="submit">{:lang('Save')}</button>
+                        </div>
+                        <a class="btn btn-default btn-flat" href="javascript:history.back(-1);">{:lang('Return')}</a>
+                    </div>
+                </div>
+              </div>
+              <!-- nav-tabs-custom -->
+            </form>
+        </div>
+
+
+</section>
+<!-- /.content -->
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function(){
+
+        $("#form").validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 32
+                },
+                en_name: {
+                    required: true,
+                    maxlength: 32
+                }
+            },
+            submitHandler: function(form) {
+                <!-- alert("submitted!"); -->
+                $.ajax({
+                    url:"{:Url('admin/category/update')}",
+                    data:$(form).serialize(),
+                    type:'post',
+                    dataType:'json',
+                    success:function(xhr){
+                        if(xhr.code == 200){
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "success",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        } else{
+                            swal({
+                                title: xhr.msg,
+                                text: "",
+                                type: "error",
+                                confirmButtonText: '{:lang('Determine')}',
+                                cancelButtonText: '{:lang('Cancel')}',
+                            });
+                        }
+                    }
+                });
+
+            }
+        });
+
+    });
+</script>
+{/block}
